@@ -1,0 +1,49 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build client
+        run: npm run build -w @savings-tracker/client
+
+      - name: Check server
+        run: npm run build -w @savings-tracker/server --if-present
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Format check
+        run: npm run format --if-present
+
+      - name: Type check
+        run: |
+          npx tsc --noEmit -p apps/server/tsconfig.json
+          npx tsc -p apps/client/tsconfig.json
+
+      - name: Test
+        run: npm run test --if-present
