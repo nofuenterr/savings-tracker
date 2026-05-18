@@ -1,0 +1,46 @@
+{
+  "name": "savings-tracker",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n client,server -c cyan,yellow \"npm run dev -w @savings-tracker/client\" \"npm run dev -w @savings-tracker/server\"",
+    "build": "npm run build -w @savings-tracker/client",
+    "start": "npm run start -w @savings-tracker/server",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --check",
+    "format:fix": "prettier . --write",
+    "check": "npm run lint && npm run format",
+    "fix": "npm run lint:fix && npm run format:fix",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^15.15.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.59.3"
+  }
+}
