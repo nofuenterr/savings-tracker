@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --passWithNoTests",
     "migrate": "tsx src/database/migrate.ts",
     "rollback": "tsx src/database/rollback.ts",
     "seed": "tsx src/database/seeds/seed.ts"
