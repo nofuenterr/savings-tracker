@@ -3,7 +3,11 @@ import path from 'path';
 
 import db from './db';
 
-const seedFiles: string[] = [];
+const seedFiles: string[] = [
+  '001_users.sql',
+  '002_goals.sql',
+  '003_transactions.sql',
+];
 
 const run = async () => {
   try {
