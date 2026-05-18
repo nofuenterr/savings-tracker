@@ -1,0 +1,51 @@
+@import 'tailwindcss';
+
+/* @theme {
+  --color-*: initial;
+} */
+
+@layer utilities {
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .no-spinner {
+    appearance: textfield;
+  }
+}
+
+:root {
+  --font-default:
+    'Font Here', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  font-family: var(--font-default);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5625rem;
+  background-color: hsl(0, 100%, 0%);
+  color: hsl(0, 100%, 100%);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  position: relative;
+  min-height: 100dvh;
+  margin: 0 auto;
+}
+
+body {
+  position: relative;
+  min-height: 100dvh;
+  margin: 0 auto;
+}
+
+pre {
+  font-family: inherit;
+  font-size: inherit;
+}
