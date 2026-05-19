@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 declare const process: {
   env: Record<string, string | undefined>;
 };

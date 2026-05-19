@@ -6,9 +6,9 @@
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
     "test": "jest --runInBand --passWithNoTests",
-    "migrate": "tsx src/database/migrate.ts",
-    "rollback": "tsx src/database/rollback.ts",
-    "seed": "tsx src/database/seeds/seed.ts"
+    "migrate": "tsx src/includes/db/migrate.ts",
+    "rollback": "tsx src/includes/db/rollback.ts",
+    "seed": "tsx src/includes/db/seed.ts"
   },
   "dependencies": {
     "@savings-tracker/shared": "*",
