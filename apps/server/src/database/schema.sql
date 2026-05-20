@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS transactions (
   CONSTRAINT amount_positive CHECK (amount > 0)
 );
 
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token_hash TEXT NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  used_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE OR REPLACE VIEW user_total_savings AS
   SELECT 
     user_id,
