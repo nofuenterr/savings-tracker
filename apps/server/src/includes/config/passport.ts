@@ -29,7 +29,8 @@ const configurePassport = () => {
           return done(null, false, {
             message: "An account with the email doesn't exist",
           });
-        await compare(password, user.password_hash);
+        const match = await compare(password, user.password_hash);
+        if (!match) return done(null, false, { message: 'Incorrect password' });
         const {
           password_hash,
           ...safeUser
