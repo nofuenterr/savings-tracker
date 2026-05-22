@@ -12,7 +12,7 @@ export const requireAuth = (
   passport.authenticate(
     'jwt',
     { session: false },
-    (err: Error, user: SafeUser) => {
+    (err: Error | null, user: SafeUser | false) => {
       if (err) return next(err);
 
       if (!user)

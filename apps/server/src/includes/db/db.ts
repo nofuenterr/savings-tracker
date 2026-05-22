@@ -1,4 +1,7 @@
-import { Pool } from 'pg';
+import pg, { Pool } from 'pg';
+
+pg.types.setTypeParser(pg.types.builtins.NUMERIC, parseFloat);
+pg.types.setTypeParser(pg.types.builtins.INT8, parseInt);
 
 import {
   NODE_ENV,
