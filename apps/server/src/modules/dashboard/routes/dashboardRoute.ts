@@ -22,32 +22,61 @@ import {
   getUserTransactionsSchema,
   updateGoalSchema,
 } from '../schemas/dashboardSchema';
+import {
+  dashboardLimiter,
+  mutationLimiter,
+} from '../middleware/rateLimitMiddleware';
 
 const dashboardRouter = Router();
 
-dashboardRouter.get('/', getDashboard);
-
-dashboardRouter.get('/goals', validate(getUserGoalsSchema), getUserGoals);
-dashboardRouter.get('/goals/:id', validate(getGoalSchema), getGoal);
-dashboardRouter.post('/goals', validate(createGoalSchema), createGoal);
-dashboardRouter.patch('/goals/:id', validate(updateGoalSchema), updateGoal);
-dashboardRouter.delete('/goals/:id', validate(deleteGoalSchema), deleteGoal);
-
+dashboardRouter.get(
+  '/transactions',
+  dashboardLimiter,
+  validate(getUserTransactionsSchema),
+  getUserTransactions,
+);
+dashboardRouter.get(
+  '/goals',
+  dashboardLimiter,
+  validate(getUserGoalsSchema),
+  getUserGoals,
+);
+dashboardRouter.post(
+  '/goals',
+  mutationLimiter,
+  validate(createGoalSchema),
+  createGoal,
+);
 dashboardRouter.get(
   '/goals/:id/transactions',
+  dashboardLimiter,
   validate(getGoalTransactionsSchema),
   getGoalTransactions,
 );
 dashboardRouter.post(
   '/goals/:id/transactions',
+  mutationLimiter,
   validate(createTransactionSchema),
   createTransaction,
 );
-
 dashboardRouter.get(
-  '/transactions',
-  validate(getUserTransactionsSchema),
-  getUserTransactions,
+  '/goals/:id',
+  dashboardLimiter,
+  validate(getGoalSchema),
+  getGoal,
 );
+dashboardRouter.patch(
+  '/goals/:id',
+  mutationLimiter,
+  validate(updateGoalSchema),
+  updateGoal,
+);
+dashboardRouter.delete(
+  '/goals/:id',
+  mutationLimiter,
+  validate(deleteGoalSchema),
+  deleteGoal,
+);
+dashboardRouter.get('/', dashboardLimiter, getDashboard);
 
 export default dashboardRouter;
