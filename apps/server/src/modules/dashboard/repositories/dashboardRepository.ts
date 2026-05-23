@@ -19,6 +19,7 @@ import {
   GoalBalanceRow,
   FindGoalsByUserIdParams,
   GoalWithBalanceRow,
+  GoalWithBalanceAndProgressRow,
 } from '../types/dashboardType';
 import { goalSortOptions } from '../utils/dashboardUtil';
 
@@ -57,13 +58,13 @@ export const findGoalsByUserId = async ({
   userId,
   status,
   sortBy = 'newest',
-}: FindGoalsByUserIdParams) => {
+}: FindGoalsByUserIdParams): Promise<GoalWithBalanceAndProgressRow[]> => {
   const sortMeta = goalSortOptions[sortBy];
   const col = sortMeta.table
     ? `${sortMeta.table}.${sortMeta.column}`
     : sortMeta.column;
 
-  const params = [1];
+  const params = [userId];
 
   let query = `
     SELECT g.id, g.user_id, g.goal_name, g.goal_target, g.deadline, g.created_at,
@@ -72,7 +73,6 @@ export const findGoalsByUserId = async ({
     FROM goals AS g
     LEFT JOIN goal_balances AS gb ON g.id = gb.goal_id
     WHERE g.user_id = $1
-      AND g.deleted_at IS NULL
   `;
 
   if (status) {
@@ -100,7 +100,6 @@ export const findGoalById = async ({
     LEFT JOIN goal_balances AS gb ON g.id = gb.goal_id
     WHERE g.user_id = $1
       AND g.id = $2
-      AND g.deleted_at IS NULL
     LIMIT 1
     `,
     [userId, id],
@@ -160,7 +159,6 @@ export const updateGoalById = async ({
       updated_at = NOW()
     WHERE user_id = $1
       AND id = $2
-      AND deleted_at IS NULL
     RETURNING id, user_id, goal_name, goal_target, deadline, updated_at
     `,
     [userId, id, goalName, goalTarget, deadline],
@@ -175,12 +173,10 @@ export const deleteGoalById = async ({
 }: DeleteGoalByIdParams): Promise<DeletedGoalRow | undefined> => {
   const { rows } = await db.query<DeletedGoalRow>(
     `
-    UPDATE goals
-    SET deleted_at = NOW()
+    DELETE FROM goals
     WHERE user_id = $1
       AND id = $2
-      AND deleted_at IS NULL
-    RETURNING id, goal_name, deleted_at
+    RETURNING id, goal_name
     `,
     [userId, id],
   );

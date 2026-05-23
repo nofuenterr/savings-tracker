@@ -8,7 +8,6 @@ interface Goal {
   deadline: Date | null;
   created_at: Date;
   updated_at: Date;
-  deleted_at: Date | null;
 }
 
 export interface UserIdParams {
@@ -100,19 +99,21 @@ export interface DeleteGoalByIdParams {
   id: number;
 }
 
-export type GoalRow = Omit<Goal, 'updated_at' | 'deleted_at'>;
+export type GoalRow = Omit<Goal, 'updated_at'>;
 
 export type GoalWithBalanceRow = GoalRow & { current: number };
+
+export type GoalWithBalanceAndProgressRow = GoalWithBalanceRow & {
+  progress: number;
+};
 
 export interface GoalBalanceRow {
   current: number;
 }
 
-export type UpdatedGoalRow = Omit<Goal, 'created_at' | 'deleted_at'>;
+export type UpdatedGoalRow = Omit<Goal, 'created_at'>;
 
-export type DeletedGoalRow = Pick<Goal, 'id' | 'goal_name'> & {
-  deleted_at: Date;
-};
+export type DeletedGoalRow = Pick<Goal, 'id' | 'goal_name'>;
 
 export type TransactionType = 'deposit' | 'withdrawal';
 

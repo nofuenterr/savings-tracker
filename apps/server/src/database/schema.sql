@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS goals (
   deadline TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  deleted_at TIMESTAMPTZ,
   CONSTRAINT goal_name_not_blank CHECK (TRIM(goal_name) <> ''),
   CONSTRAINT goal_target_positive CHECK (goal_target > 0)
 );
