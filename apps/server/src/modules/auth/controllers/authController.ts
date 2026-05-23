@@ -22,11 +22,22 @@ export const register = async (
   try {
     const { username, email, password } = req.body;
 
-    const result = await registerUser({ username, email, password });
+    const user = await registerUser({ username, email, password });
+
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60,
+    });
 
     return res.status(201).json({
       success: true,
-      data: result,
+      data: user,
     });
   } catch (err) {
     next(err);
@@ -68,8 +79,7 @@ export const login =
           return res.status(200).json({
             success: true,
             message: 'Auth Passed',
-            token,
-            user,
+            data: user,
           });
         } catch (err) {
           next(err);
