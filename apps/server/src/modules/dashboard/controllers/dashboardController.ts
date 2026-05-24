@@ -57,7 +57,7 @@ export const getUserGoals = async (
 
     return res.status(200).json({
       success: true,
-      data: goals,
+      data: { goals },
     });
   } catch (err) {
     next(err);
@@ -76,7 +76,7 @@ export const getGoal = async (
 
     return res.status(200).json({
       success: true,
-      data: goal,
+      data: { goal },
     });
   } catch (err) {
     next(err);
@@ -100,7 +100,7 @@ export const createGoal = async (
 
     return res.status(201).json({
       success: true,
-      data: newGoal,
+      data: { newGoal },
     });
   } catch (err) {
     next(err);
@@ -126,7 +126,7 @@ export const updateGoal = async (
 
     return res.status(200).json({
       success: true,
-      data: updatedGoal,
+      data: { updatedGoal },
     });
   } catch (err) {
     next(err);
@@ -148,7 +148,7 @@ export const deleteGoal = async (
 
     return res.status(200).json({
       success: true,
-      data: deletedGoal,
+      data: { deletedGoal },
     });
   } catch (err) {
     next(err);
@@ -174,7 +174,7 @@ export const createTransaction = async (
 
     return res.status(201).json({
       success: true,
-      data: newTransaction,
+      data: { newTransaction },
     });
   } catch (err) {
     next(err);
@@ -198,7 +198,7 @@ export const getGoalTransactions = async (
 
     return res.status(200).json({
       success: true,
-      data: goalTransactions,
+      data: { goalTransactions },
     });
   } catch (err) {
     next(err);
@@ -220,7 +220,7 @@ export const getUserTransactions = async (
 
     return res.status(200).json({
       success: true,
-      data: transactions,
+      data: { transactions },
     });
   } catch (err) {
     next(err);
