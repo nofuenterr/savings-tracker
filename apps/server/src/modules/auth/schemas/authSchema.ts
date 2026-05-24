@@ -28,7 +28,7 @@ export const forgotPasswordSchema = z.object({
 });
 
 export const verifyResetTokenSchema = z.object({
-  query: z.object({
+  body: z.object({
     token: z.string().min(1, 'Password reset token is required'),
   }),
 });

@@ -12,7 +12,12 @@ import {
   registerUser,
   sendResetLink,
 } from '../services/authService';
-import { RegisterBody, ResetPasswordBody } from '../types/authType';
+import {
+  ForgotPasswordBody,
+  RegisterBody,
+  ResetPasswordBody,
+  VerifyResetTokenBody,
+} from '../types/authType';
 
 export const register = async (
   req: ControllerRequest<object, RegisterBody>,
@@ -37,7 +42,7 @@ export const register = async (
 
     return res.status(201).json({
       success: true,
-      data: user,
+      data: { user },
     });
   } catch (err) {
     next(err);
@@ -78,8 +83,7 @@ export const login =
 
           return res.status(200).json({
             success: true,
-            message: 'Auth Passed',
-            data: user,
+            data: { user },
           });
         } catch (err) {
           next(err);
@@ -105,20 +109,22 @@ export const logout = async (
 };
 
 export const forgotPassword = async (
-  req: ControllerRequest<object, { email: string }>,
+  req: ControllerRequest<object, ForgotPasswordBody>,
   res: Response,
   next: NextFunction,
 ) => {
   try {
     const { email } = req.body;
 
-    const result = await sendResetLink({ email });
+    const tokenRaw = await sendResetLink({ email });
+
+    console.log(
+      `http://localhost:3000/auth/verify-reset-token?token=${tokenRaw}`,
+    );
 
     return res.status(201).json({
       success: true,
-      data: result,
-      message: `Check your inbox. We've sent a reset link to ${email}. The link expires in 30 minutes.`,
-      link: `http://localhost:3000/auth/verify-reset-token?token=${result.tokenRaw}`,
+      data: { email },
     });
   } catch (err) {
     next(err);
@@ -126,12 +132,12 @@ export const forgotPassword = async (
 };
 
 export const verifyResetToken = async (
-  req: ControllerRequest<object, object, { token: string }>,
+  req: ControllerRequest<object, VerifyResetTokenBody>,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { token } = req.query;
+    const { token } = req.body;
 
     const result = await fetchResetToken({ tokenRaw: token });
 
@@ -143,8 +149,7 @@ export const verifyResetToken = async (
 
     return res.status(200).json({
       success: true,
-      message: 'Password reset token has been verified',
-      resetToken,
+      data: { resetToken },
     });
   } catch (err) {
     next(err);
@@ -165,7 +170,7 @@ export const resetPassword = async (
       throw new Error('Invalid token');
     }
 
-    const result = await editPassword({
+    await editPassword({
       userId: payload.userId,
       newPassword,
     });
@@ -174,7 +179,6 @@ export const resetPassword = async (
 
     return res.status(200).json({
       success: true,
-      data: result,
       message: 'Your password has been reset successfully.',
     });
   } catch (err) {

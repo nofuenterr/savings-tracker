@@ -1,18 +1,42 @@
 import z from 'zod';
 
 import { SafeUser } from '../../../types/userType';
-import { registerSchema } from '../schemas/authSchema';
+import {
+  forgotPasswordSchema,
+  registerSchema,
+  resetPasswordSchema,
+  verifyResetTokenSchema,
+} from '../schemas/authSchema';
 
 export type RegisterBody = z.infer<typeof registerSchema>['body'];
+
+export type ForgotPasswordBody = z.infer<typeof forgotPasswordSchema>['body'];
+
+export type VerifyResetTokenBody = z.infer<
+  typeof verifyResetTokenSchema
+>['body'];
+
+export type ResetPasswordBody = z.infer<typeof resetPasswordSchema>['body'];
 
 export type RegisterUserParams = Pick<
   RegisterBody,
   'username' | 'email' | 'password'
 >;
 
+export type SendResetLinkParams = ForgotPasswordBody;
+
+export interface FetchResetTokenParams {
+  tokenRaw: string;
+}
+
 export type CreateUserParams = Pick<RegisterBody, 'username' | 'email'> & {
   passwordHash: string;
 };
+
+export interface EditPasswordParams {
+  userId: number;
+  newPassword: string;
+}
 
 export interface UserIdAndEmail {
   id: number;
@@ -39,26 +63,9 @@ export type NewResetTokenRow = Pick<
   'id' | 'expires_at' | 'created_at'
 >;
 
-export interface SendResetLinkDTO {
-  token: NewResetTokenRow;
-  user: UserIdAndEmail;
-  tokenRaw: string;
-}
-
 export type ValidResetTokenRow = Pick<ResetToken, 'id' | 'user_id'> & {
   used_at: null;
 };
-
-export interface ResetPasswordBody {
-  resetToken: string;
-  newPassword: string;
-  confirmNewPassword: string;
-}
-
-export interface EditPasswordParams {
-  userId: number;
-  newPassword: string;
-}
 
 export interface UpdatePasswordParams {
   userId: number;

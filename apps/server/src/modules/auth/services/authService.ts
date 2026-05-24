@@ -11,8 +11,9 @@ import {
 } from '../repositories/authRepository';
 import {
   EditPasswordParams,
+  FetchResetTokenParams,
   RegisterUserParams,
-  SendResetLinkDTO,
+  SendResetLinkParams,
 } from '../types/authType';
 
 export const registerUser = async ({
@@ -29,11 +30,7 @@ export const registerUser = async ({
   return success;
 };
 
-export const sendResetLink = async ({
-  email,
-}: {
-  email: string;
-}): Promise<SendResetLinkDTO> => {
+export const sendResetLink = async ({ email }: SendResetLinkParams) => {
   const user = await findUserByEmail({ email });
 
   if (!user) throw new NotFoundError('User not found');
@@ -51,10 +48,10 @@ export const sendResetLink = async ({
 
   if (!token) throw new NotFoundError('Failed to create password reset token');
 
-  return { token, user, tokenRaw };
+  return tokenRaw;
 };
 
-export const fetchResetToken = async ({ tokenRaw }: { tokenRaw: string }) => {
+export const fetchResetToken = async ({ tokenRaw }: FetchResetTokenParams) => {
   const incomingHash = crypto
     .createHash('sha256')
     .update(tokenRaw)
