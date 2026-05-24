@@ -24,6 +24,11 @@ export interface MonthlyActivityRow {
   withdrawals: number;
 }
 
+export interface GoalCountRow {
+  active: number;
+  completed: number;
+}
+
 export type GoalStatus = 'inProgress' | 'completed' | 'notStarted';
 
 export type GoalSortKeys =
@@ -101,9 +106,8 @@ export interface DeleteGoalByIdParams {
 
 export type GoalRow = Omit<Goal, 'updated_at'>;
 
-export type GoalWithBalanceRow = GoalRow & { current: number };
-
-export type GoalWithBalanceAndProgressRow = GoalWithBalanceRow & {
+export type GoalWithBalanceAndProgressRow = GoalRow & {
+  current: number;
   progress: number;
 };
 

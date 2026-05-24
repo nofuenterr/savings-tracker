@@ -18,8 +18,8 @@ import {
   FindGoalBalanceByIdParams,
   GoalBalanceRow,
   FindGoalsByUserIdParams,
-  GoalWithBalanceRow,
   GoalWithBalanceAndProgressRow,
+  GoalCountRow,
 } from '../types/dashboardType';
 import { goalSortOptions } from '../utils/dashboardUtil';
 
@@ -46,12 +46,31 @@ export const findUserMonthlyActivityByUserId = async ({
     SELECT month, deposits, withdrawals
     FROM monthly_activity
     WHERE user_id = $1
-    ORDER BY month DESC;
+    ORDER BY month DESC
     `,
     [userId],
   );
 
   return rows;
+};
+
+export const findUserGoalCountsByUserId = async ({
+  userId,
+}: UserIdParams): Promise<GoalCountRow | undefined> => {
+  const { rows } = await db.query<GoalCountRow>(
+    `
+    SELECT
+      COUNT(CASE WHEN COALESCE(gb.current, 0) < g.goal_target THEN 1 END) AS active,
+      COUNT(CASE WHEN COALESCE(gb.current, 0) >= g.goal_target THEN 1 END) AS completed
+    FROM goals AS g
+    LEFT JOIN goal_balances AS gb ON g.id = gb.goal_id
+    WHERE g.user_id = $1
+    LIMIT 1
+    `,
+    [userId],
+  );
+
+  return rows[0];
 };
 
 export const findGoalsByUserId = async ({
@@ -91,11 +110,12 @@ export const findGoalsByUserId = async ({
 export const findGoalById = async ({
   userId,
   id,
-}: FindGoalByIdParams): Promise<GoalWithBalanceRow | undefined> => {
-  const { rows } = await db.query<GoalWithBalanceRow>(
+}: FindGoalByIdParams): Promise<GoalWithBalanceAndProgressRow | undefined> => {
+  const { rows } = await db.query<GoalWithBalanceAndProgressRow>(
     `
     SELECT g.id, g.user_id, g.goal_name, g.goal_target, g.deadline, g.created_at,
-      COALESCE(gb.current, 0) AS current
+      COALESCE(gb.current, 0) AS current,
+      (COALESCE(gb.current, 0) / g.goal_target * 100) AS progress
     FROM goals AS g
     LEFT JOIN goal_balances AS gb ON g.id = gb.goal_id
     WHERE g.user_id = $1

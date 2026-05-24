@@ -13,6 +13,7 @@ import {
   updateGoalById,
   findUserMonthlyActivityByUserId,
   findGoalBalanceById,
+  findUserGoalCountsByUserId,
 } from '../repositories/dashboardRepository';
 import {
   InsertGoalParams,
@@ -28,12 +29,14 @@ import {
 
 export const fetchDashboard = async ({ userId }: UserIdParams) => {
   const totalSavings = await findUserTotalSavingsByUserId({ userId });
-
   const monthlyActivity = await findUserMonthlyActivityByUserId({ userId });
+  const goalCounts = await findUserGoalCountsByUserId({ userId });
 
   return {
     totalSavings: totalSavings?.total_savings ?? 0,
     monthlyActivity,
+    activeGoals: goalCounts?.active ?? 0,
+    completedGoals: goalCounts?.completed ?? 0,
   };
 };
 
