@@ -8,45 +8,10 @@ import {
   verifyResetTokenSchema,
 } from '../schemas/authSchema';
 
-export type RegisterBody = z.infer<typeof registerSchema>['body'];
-
-export type ForgotPasswordBody = z.infer<typeof forgotPasswordSchema>['body'];
-
-export type VerifyResetTokenBody = z.infer<
-  typeof verifyResetTokenSchema
->['body'];
-
-export type ResetPasswordBody = z.infer<typeof resetPasswordSchema>['body'];
-
-export type RegisterUserParams = Pick<
-  RegisterBody,
-  'username' | 'email' | 'password'
->;
-
-export type SendResetLinkParams = ForgotPasswordBody;
-
-export interface FetchResetTokenParams {
-  tokenRaw: string;
-}
-
-export type CreateUserParams = Pick<RegisterBody, 'username' | 'email'> & {
-  passwordHash: string;
-};
-
-export interface EditPasswordParams {
-  userId: number;
-  newPassword: string;
-}
-
+// --- DB Rows (what comes back from postgres) ---
 export interface UserIdAndEmail {
   id: number;
   email: string;
-}
-
-export interface CreateResetTokenParams {
-  userId: number;
-  tokenHash: string;
-  expiresAt: string;
 }
 
 interface ResetToken {
@@ -67,11 +32,59 @@ export type ValidResetTokenRow = Pick<ResetToken, 'id' | 'user_id'> & {
   used_at: null;
 };
 
+export type SafeUpdatedUser = Omit<SafeUser, 'created_at'> & {
+  updated_at: Date;
+};
+
+// --- Repository Params ---
+export type CreateUserParams = Pick<RegisterBody, 'username' | 'email'> & {
+  passwordHash: string;
+};
+
+export interface FindUserByEmailParams {
+  email: string;
+}
+
+export interface CreateResetTokenParams {
+  userId: number;
+  tokenHash: string;
+  expiresAt: string;
+}
+
+export interface FindResetTokenParams {
+  incomingHash: string;
+}
+
 export interface UpdatePasswordParams {
   userId: number;
   passwordHash: string;
 }
 
-export type SafeUpdatedUser = Omit<SafeUser, 'created_at'> & {
-  updated_at: Date;
-};
+// --- Service Params ---
+export type RegisterUserParams = Pick<
+  RegisterBody,
+  'username' | 'email' | 'password'
+>;
+
+export type SendResetLinkParams = ForgotPasswordBody;
+
+export interface FetchResetTokenParams {
+  tokenRaw: string;
+}
+
+export interface EditPasswordParams {
+  userId: number;
+  newPassword: string;
+}
+
+// --- Controller Types (body, params, query) ---
+export type VerifyResetTokenBody = z.infer<
+  typeof verifyResetTokenSchema
+>['body'];
+
+export type ResetPasswordBody = z.infer<typeof resetPasswordSchema>['body'];
+
+// --- Shared/General ---
+export type RegisterBody = z.infer<typeof registerSchema>['body'];
+
+export type ForgotPasswordBody = z.infer<typeof forgotPasswordSchema>['body'];

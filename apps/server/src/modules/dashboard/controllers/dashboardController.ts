@@ -20,6 +20,7 @@ import {
   GoalIdParams,
   GoalSortKeys,
   GoalStatus,
+  TransactionType,
   UpdateGoalBody,
 } from '../types/dashboardType';
 
@@ -192,7 +193,7 @@ export const getGoalTransactions = async (
     const goalTransactions = await fetchGoalTransactions({
       userId: req.user.id,
       goalId: Number(id),
-      transactionType: transactionType as 'deposit' | 'withdrawal' | undefined,
+      transactionType: transactionType as TransactionType | undefined,
     });
 
     return res.status(200).json({
@@ -214,7 +215,7 @@ export const getUserTransactions = async (
 
     const transactions = await fetchUserTransactions({
       userId: req.user.id,
-      transactionType: transactionType as 'deposit' | 'withdrawal' | undefined,
+      transactionType: transactionType as TransactionType | undefined,
     });
 
     return res.status(200).json({

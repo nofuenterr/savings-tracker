@@ -8,6 +8,8 @@ import {
   UserIdAndEmail,
   UpdatePasswordParams,
   SafeUpdatedUser,
+  FindUserByEmailParams,
+  FindResetTokenParams,
 } from '../types/authType';
 
 export const createUser = async ({
@@ -27,9 +29,7 @@ export const createUser = async ({
 
 export const findUserByEmail = async ({
   email,
-}: {
-  email: string;
-}): Promise<UserIdAndEmail | undefined> => {
+}: FindUserByEmailParams): Promise<UserIdAndEmail | undefined> => {
   const { rows } = await db.query<UserIdAndEmail>(
     `SELECT id, email FROM users
     WHERE email = $1;`,
@@ -56,9 +56,7 @@ export const createResetToken = async ({
 
 export const findResetToken = async ({
   incomingHash,
-}: {
-  incomingHash: string;
-}): Promise<ValidResetTokenRow | undefined> => {
+}: FindResetTokenParams): Promise<ValidResetTokenRow | undefined> => {
   const { rows } = await db.query<ValidResetTokenRow>(
     `UPDATE password_reset_tokens
       SET used_at = NOW()
