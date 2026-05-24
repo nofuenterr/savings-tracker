@@ -1,10 +1,6 @@
-export interface User {
-  id: string;
-  username: string;
+export interface SafeUser {
+  id: number;
+  username: string | null;
   email: string;
-}
-
-export interface ApiResponse<T> {
-  data: T;
-  message: string;
+  created_at: Date;
 }
