@@ -1,5 +1,6 @@
+import { SafeUser } from '@savings-tracker/shared';
+
 import db from '../../../includes/db/db';
-import { SafeUser } from '../../../types/userType';
 import {
   CreateResetTokenParams,
   CreateUserParams,

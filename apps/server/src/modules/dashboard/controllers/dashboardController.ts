@@ -1,5 +1,7 @@
 import { NextFunction, Response } from 'express';
 
+import { TransactionType } from '@savings-tracker/shared';
+
 import { ControllerRequest } from '../../../types/controllerType';
 import {
   addGoal,
@@ -20,7 +22,6 @@ import {
   GoalIdParams,
   GoalSortKeys,
   GoalStatus,
-  TransactionType,
   UpdateGoalBody,
 } from '../types/dashboardType';
 

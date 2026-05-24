@@ -1,6 +1,8 @@
 import z from 'zod';
 import { ParamsDictionary } from 'express-serve-static-core';
 
+import { TransactionType } from '@savings-tracker/shared';
+
 import {
   createGoalSchema,
   createTransactionSchema,
@@ -114,8 +116,6 @@ export interface GetTransactionsQuery {
 }
 
 // --- Shared/General ---
-export type TransactionType = 'deposit' | 'withdrawal';
-
 export interface UserIdParams {
   userId: number;
 }

@@ -2,9 +2,10 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import { PassportStatic } from 'passport';
 import { NextFunction, Request, Response } from 'express';
 
+import { SafeUser } from '@savings-tracker/shared';
+
 import { JWT_SECRET, NODE_ENV } from '../../../includes/config/mainConfig';
 import { ControllerRequest } from '../../../types/controllerType';
-import { SafeUser } from '../../../types/userType';
 import { UnauthorizedError } from '../../../utils/errors';
 import {
   editPassword,

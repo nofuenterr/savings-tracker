@@ -1,6 +1,7 @@
 import z from 'zod';
 
-import { SafeUser } from '../../../types/userType';
+import { SafeUser } from '@savings-tracker/shared';
+
 import {
   forgotPasswordSchema,
   registerSchema,
