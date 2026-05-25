@@ -20,6 +20,21 @@ import {
   VerifyResetTokenBody,
 } from '../types/authType';
 
+export async function getCurrentUser(
+  req: ControllerRequest,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    return res.status(200).json({
+      success: true,
+      data: req.user,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export const register = async (
   req: ControllerRequest<object, RegisterBody>,
   res: Response,

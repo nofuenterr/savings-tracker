@@ -11,6 +11,7 @@ import {
 } from '../schemas/authSchema';
 import {
   forgotPassword,
+  getCurrentUser,
   login,
   logout,
   register,
@@ -28,6 +29,7 @@ import {
 const authRouterFactory = (passport: PassportStatic) => {
   const authRouter = Router();
 
+  authRouter.get('/me', getCurrentUser);
   authRouter.post(
     '/register',
     registerLimiter,
