@@ -1,3 +1,5 @@
+import type { SafeUser } from '@savings-tracker/shared';
+
 import type { DataResponse, MessageResponse } from '../../../shared/types/api';
 import api from '../../../lib/axios';
 import type {
@@ -11,6 +13,12 @@ import type {
   VerifyResetTokenParams,
   VerifyResetTokenResponse,
 } from '../types/authType';
+
+export const getCurrentUser = async () => {
+  const { data } = await api.get<DataResponse<SafeUser>>('/auth/me');
+
+  return data.data;
+};
 
 export const login = async (payload: LoginParams) => {
   const { data } = await api.post<DataResponse<LoginResponse>>(

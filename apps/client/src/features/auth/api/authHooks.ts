@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 // import toast from 'react-hot-toast'
 
@@ -9,7 +9,17 @@ import {
   forgotPassword,
   resetPassword,
   verifyResetToken,
+  getCurrentUser,
 } from './authApi';
+
+export function useGetCurrentUser() {
+  return useQuery({
+    queryKey: ['user'],
+    queryFn: getCurrentUser,
+    retry: false,
+    staleTime: Infinity,
+  });
+}
 
 export function useLogin() {
   const queryClient = useQueryClient();
