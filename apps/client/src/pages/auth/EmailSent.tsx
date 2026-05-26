@@ -1,3 +1,11 @@
+import EmailContent from '../../features/auth/components/email-sent/EmailContent';
+import EmailQuote from '../../features/auth/components/email-sent/EmailQuote';
+
 export default function EmailSent() {
-  return <h1>Email Sent</h1>;
+  return (
+    <>
+      <EmailQuote />
+      <EmailContent />
+    </>
+  );
 }

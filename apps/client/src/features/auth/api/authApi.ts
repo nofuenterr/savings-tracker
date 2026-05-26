@@ -17,7 +17,7 @@ import type {
 export const getCurrentUser = async () => {
   const { data } = await api.get<DataResponse<SafeUser>>('/auth/me');
 
-  return data.data;
+  return data.data ?? null;
 };
 
 export const login = async (payload: LoginParams) => {

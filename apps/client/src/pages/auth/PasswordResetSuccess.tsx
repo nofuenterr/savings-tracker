@@ -1,3 +1,11 @@
+import PasswordResetSuccessContent from '../../features/auth/components/password-reset-success/PasswordResetSuccessContent';
+import PasswordResetSuccessQuote from '../../features/auth/components/password-reset-success/PasswordResetSuccessQuote';
+
 export default function PasswordResetSuccess() {
-  return <h1>Password Reset Success</h1>;
+  return (
+    <>
+      <PasswordResetSuccessQuote />
+      <PasswordResetSuccessContent />
+    </>
+  );
 }
