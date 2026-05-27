@@ -4,8 +4,9 @@ import { Strategy as JwtStrategy } from 'passport-jwt';
 import { compare } from 'bcryptjs';
 import { Request } from 'express';
 
+import { SafeUser } from '@savings-tracker/shared';
+
 import db from '../db/db';
-import { SafeUser } from '../../types/userType';
 import { JWT_SECRET } from './mainConfig';
 
 const configurePassport = () => {

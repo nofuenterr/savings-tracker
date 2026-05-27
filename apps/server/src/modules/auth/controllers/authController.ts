@@ -135,7 +135,7 @@ export const forgotPassword = async (
     const tokenRaw = await sendResetLink({ email });
 
     console.log(
-      `http://localhost:3000/auth/verify-reset-token?token=${tokenRaw}`,
+      `http://localhost:5173/auth/verify-reset-token?token=${tokenRaw}`,
     );
 
     return res.status(201).json({

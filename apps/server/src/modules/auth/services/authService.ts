@@ -33,7 +33,7 @@ export const registerUser = async ({
 export const sendResetLink = async ({ email }: SendResetLinkParams) => {
   const user = await findUserByEmail({ email });
 
-  if (!user) throw new NotFoundError('User not found');
+  if (!user) throw new NotFoundError("An account with the email doesn't exist");
 
   const tokenRaw = crypto.randomBytes(32).toString('hex');
   const tokenHash = crypto.createHash('sha256').update(tokenRaw).digest('hex');

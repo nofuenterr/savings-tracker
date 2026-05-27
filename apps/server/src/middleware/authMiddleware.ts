@@ -1,8 +1,9 @@
 import passport from 'passport';
 import { NextFunction, Request, Response } from 'express';
 
+import { SafeUser } from '@savings-tracker/shared';
+
 import { UnauthorizedError } from '../utils/errors';
-import { SafeUser } from '../types/userType';
 
 export const requireAuth = (
   req: Request,
