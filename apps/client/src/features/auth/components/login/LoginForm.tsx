@@ -2,18 +2,16 @@ import { Link } from 'react-router-dom';
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { isAxiosError } from 'axios';
 
-import errorIcon from '../../../../assets/icons/icon-error.svg';
 import ButtonPrimary from '../../../../components/ButtonPrimary';
 import { useLogin } from '../../api/authHooks';
+import getFieldError from '../../utils/getFieldError';
+import type { ErrorResponse } from '../../types/authType';
 import Input from '../Input';
+import ErrorMessage from '../ErrorMessage';
 
 interface LoginCredentials {
   email: string;
   password: string;
-}
-
-interface LoginErrorResponse {
-  message: string;
 }
 
 export default function LoginForm() {
@@ -21,9 +19,17 @@ export default function LoginForm() {
   const [password, setPassword] = useState<string>('');
   const login = useLogin();
 
-  const errorMessage = isAxiosError<LoginErrorResponse>(login.error)
-    ? login.error.response?.data?.message
+  const serverErrors = isAxiosError<ErrorResponse>(login.error)
+    ? login.error.response?.data
     : null;
+
+  const fieldErrors = serverErrors?.errors;
+
+  const generalError =
+    serverErrors && !fieldErrors?.length ? serverErrors.message : null;
+
+  const emailError = getFieldError(fieldErrors, 'email');
+  const passwordError = getFieldError(fieldErrors, 'password');
 
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +41,7 @@ export default function LoginForm() {
       <Input
         label="Email address"
         required={true}
+        autoFocus={true}
         type="email"
         name="email"
         placeholder="kleinmoretti@email.com"
@@ -43,6 +50,7 @@ export default function LoginForm() {
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           setEmail(e.target.value)
         }
+        error={emailError}
       />
 
       <div className="grid gap-150">
@@ -55,6 +63,7 @@ export default function LoginForm() {
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             setPassword(e.target.value)
           }
+          error={passwordError}
         />
         <Link
           className="text-preset-5 justify-self-end rounded-full text-neutral-300 hover:opacity-90"
@@ -64,12 +73,7 @@ export default function LoginForm() {
         </Link>
       </div>
 
-      {errorMessage && (
-        <p className="flex items-center gap-100 text-red-500">
-          {errorIcon && <img src={errorIcon} alt="" />}
-          <span>{errorMessage}</span>
-        </p>
-      )}
+      {generalError && <ErrorMessage errorMessage={generalError} />}
 
       <ButtonPrimary
         type="submit"

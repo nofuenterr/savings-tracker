@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryOptions,
+} from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 // import toast from 'react-hot-toast'
 
@@ -12,12 +17,13 @@ import {
   getCurrentUser,
 } from './authApi';
 
-export function useGetCurrentUser() {
+export function useGetCurrentUser(options?: Partial<UseQueryOptions<any>>) {
   return useQuery({
     queryKey: ['user'],
     queryFn: getCurrentUser,
     retry: false,
     staleTime: Infinity,
+    ...options,
   });
 }
 
@@ -69,6 +75,10 @@ export function useForgotPassword() {
     onSuccess: (_, { email }) => {
       navigate('/auth/email-sent', { state: { email } });
     },
+    onError: () => {
+      // toast.success('An error has occured while sending the email')
+      navigate('/auth/forgot-password');
+    },
   });
 }
 
@@ -78,7 +88,7 @@ export function useVerifyResetToken() {
   return useMutation({
     mutationFn: verifyResetToken,
     onSuccess: ({ resetToken }) => {
-      navigate(`/auth/reset-password?resetToken=${resetToken}`);
+      navigate('/auth/reset-password', { state: { resetToken } });
     },
     onError: () => {
       // toast.success('Reset token is not valid or has expired')
