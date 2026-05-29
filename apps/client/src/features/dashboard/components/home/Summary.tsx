@@ -143,7 +143,7 @@ function MonthlyActivity({
         </ul>
       ) : (
         <div className="grid h-25 place-content-center md:h-30">
-          <p className="text-preset-5 text-neutral-300">No transactions yet</p>
+          <p className="text-neutral-300">No transactions yet</p>
         </div>
       )}
     </div>
