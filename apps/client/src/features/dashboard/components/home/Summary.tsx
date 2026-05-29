@@ -75,7 +75,7 @@ function TotalSavings({
     <div className="rounded-16 border-neutral-0/30 grid gap-400 border bg-linear-90 from-orange-700 to-orange-400 p-200 md:col-start-1 md:col-end-3 md:p-250">
       <h2 className="text-preset-5-semibold">Total savings</h2>
       <p className="text-preset-1-mobile md:text-preset-1">
-        ${currencyFormatter.format(totalSavings)}
+        {currencyFormatter.format(totalSavings)}
       </p>
     </div>
   );
@@ -135,8 +135,8 @@ function MonthlyActivity({
             return (
               <li key={`${i}-${format(a.month, 'MMMM')}`}>
                 <p>Month: {format(a.month, 'MMMM')}</p>
-                <p>Deposits: ${currencyFormatter.format(a.deposits)}</p>
-                <p>Withdrawals: ${currencyFormatter.format(a.withdrawals)}</p>
+                <p>Deposits: {currencyFormatter.format(a.deposits)}</p>
+                <p>Withdrawals: {currencyFormatter.format(a.withdrawals)}</p>
               </li>
             );
           })}
