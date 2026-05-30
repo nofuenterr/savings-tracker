@@ -15,7 +15,7 @@ export function LoadingSpinner({
     <div
       className={`grid place-content-center place-items-center gap-300 ${
         variant === 'fullscreen'
-          ? 'fixed inset-0 z-50 h-screen w-screen bg-neutral-900/80 backdrop-blur-sm'
+          ? 'fixed inset-0 z-50 h-dvh w-full bg-neutral-900/80 backdrop-blur-sm'
           : 'h-full min-h-50 w-full p-500'
       }`}
     >
