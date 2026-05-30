@@ -1,17 +1,9 @@
-import type {
-  QueryObserverResult,
-  RefetchOptions,
-} from '@tanstack/react-query';
 import { format } from 'date-fns';
 
-import ButtonPrimary from '../../../../components/ButtonPrimary';
+import { QueryErrorState } from '../../../../components/QueryErrorState';
 import { useGetDashboard } from '../../api/dashboardHooks';
 import type { GetDashboardResponse } from '../../types/dashboardType';
 import currencyFormatter from '../../utils/currencyFormatter';
-
-type Refetch = (
-  options?: RefetchOptions | undefined,
-) => Promise<QueryObserverResult<GetDashboardResponse, Error>>;
 
 export default function SummaryContainer() {
   const { data, isLoading, isError, error, refetch, isFetching } =
@@ -20,7 +12,13 @@ export default function SummaryContainer() {
   if (isLoading || isFetching) return <SummaryLoading />;
 
   if (isError)
-    return <SummaryError message={error.message} refetch={refetch} />;
+    return (
+      <QueryErrorState
+        context="goal summary"
+        message={error.message}
+        refetch={refetch}
+      />
+    );
 
   if (!data) return null;
 
@@ -35,23 +33,6 @@ function SummaryLoading() {
       <div className="animate-shimmer rounded-16 grid h-34 gap-400 border border-neutral-600 p-200 md:h-37 md:p-250 lg:h-40"></div>
       <div className="animate-shimmer rounded-16 grid h-34 gap-400 border border-neutral-600 p-200 md:col-start-1 md:col-end-3 md:h-37 md:p-250 lg:col-end-5 lg:h-40"></div>
     </section>
-  );
-}
-
-function SummaryError({
-  message,
-  refetch,
-}: {
-  message: string;
-  refetch: Refetch;
-}) {
-  return (
-    <div className="rounded-16 order grid min-h-34 place-content-center gap-200 border border-neutral-600 bg-neutral-800 p-200 text-center text-balance md:min-h-37 md:p-250 lg:min-h-40">
-      <h2 className="text-preset-4">
-        Failed to load dashboard data: {message}
-      </h2>
-      <ButtonPrimary type="button" text="Retry" onClick={() => refetch()} />
-    </div>
   );
 }
 

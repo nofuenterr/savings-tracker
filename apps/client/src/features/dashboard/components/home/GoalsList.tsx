@@ -1,19 +1,11 @@
-import type {
-  QueryObserverResult,
-  RefetchOptions,
-} from '@tanstack/react-query';
-
 import targetIcon from '../../../../assets/icons/icon-target.svg';
 import filterIcon from '../../../../assets/icons/icon-filter.svg';
 import sortIcon from '../../../../assets/icons/icon-sort.svg';
 import ButtonPrimary from '../../../../components/ButtonPrimary';
+import { QueryErrorState } from '../../../../components/QueryErrorState';
 import { useGetUserGoals } from '../../api/dashboardHooks';
 import type { GetUserGoalsResponse } from '../../types/dashboardType';
 import GoalItem from './GoalItem';
-
-type Refetch = (
-  options?: RefetchOptions | undefined,
-) => Promise<QueryObserverResult<GetUserGoalsResponse, Error>>;
 
 export default function Goals() {
   const { data, isLoading, isError, error, refetch, isRefetching } =
@@ -21,7 +13,14 @@ export default function Goals() {
 
   if (isLoading || isRefetching) return <GoalsLoading />;
 
-  if (isError) return <GoalsError message={error.message} refetch={refetch} />;
+  if (isError)
+    return (
+      <QueryErrorState
+        context="goals list"
+        message={error.message}
+        refetch={refetch}
+      />
+    );
 
   if (!data) return null;
 
@@ -45,21 +44,6 @@ function GoalsLoading() {
         <div className="animate-shimmer rounded-16 h-60 border border-neutral-600 bg-neutral-800"></div>
         <div className="animate-shimmer rounded-16 h-60 border border-neutral-600 bg-neutral-800"></div>
       </div>
-    </div>
-  );
-}
-
-function GoalsError({
-  message,
-  refetch,
-}: {
-  message: string;
-  refetch: Refetch;
-}) {
-  return (
-    <div className="rounded-16 order grid min-h-34 place-content-center gap-200 border border-neutral-600 bg-neutral-800 p-200 text-center text-balance md:min-h-37 md:p-250 lg:min-h-40">
-      <h2 className="text-preset-4">Failed to load goals data: {message}</h2>
-      <ButtonPrimary type="button" text="Retry" onClick={() => refetch()} />
     </div>
   );
 }

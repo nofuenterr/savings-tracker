@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import { useGetCurrentUser } from '../features/auth/api/authHooks';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export default function AuthLayout() {
   const location = useLocation();
@@ -24,7 +25,8 @@ export default function AuthLayout() {
     );
   }
 
-  if (isLoading) return null;
+  if (isLoading)
+    return <LoadingSpinner variant="fullscreen" label="Verifying user..." />;
 
   if (user) return <Navigate to="/dashboard" replace />;
 

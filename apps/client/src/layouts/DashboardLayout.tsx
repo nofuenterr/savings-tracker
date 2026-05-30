@@ -2,9 +2,10 @@ import { Outlet } from 'react-router-dom';
 import { Suspense } from 'react';
 
 import Header from '../features/dashboard/components/Header';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 function DashboardLoading() {
-  return <div>Loading dashboard...</div>;
+  return <LoadingSpinner variant="fullscreen" label="Loading dashboard..." />;
 }
 
 export default function DashboardLayout() {
