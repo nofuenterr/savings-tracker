@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useVerifyResetToken } from '../../features/auth/api/authHooks';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
 export default function VerifyResetToken() {
   const [searchParams] = useSearchParams();
@@ -23,8 +24,6 @@ export default function VerifyResetToken() {
   }, [token, navigate, verify]);
 
   return (
-    <div>
-      <span>Verifying...</span>
-    </div>
+    <LoadingSpinner variant="fullscreen" label="Verifying reset token..." />
   );
 }
