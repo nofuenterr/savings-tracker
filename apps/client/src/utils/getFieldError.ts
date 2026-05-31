@@ -1,4 +1,4 @@
-import type { FieldError } from '../types/authType';
+import type { FieldError } from '../types/errorType';
 
 export default function getFieldError(
   errors: FieldError[] | undefined,

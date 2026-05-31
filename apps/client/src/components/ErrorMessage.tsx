@@ -1,4 +1,4 @@
-import errorIcon from '../../../assets/icons/icon-error.svg';
+import errorIcon from '../assets/icons/icon-error.svg';
 
 export default function ErrorMessage({
   errorMessage,
@@ -7,7 +7,7 @@ export default function ErrorMessage({
 }) {
   return (
     <p className="flex items-center gap-100 text-red-500">
-      {errorIcon && <img src={errorIcon} alt="" />}
+      <img src={errorIcon} alt="Error" />
       <span>{errorMessage}</span>
     </p>
   );

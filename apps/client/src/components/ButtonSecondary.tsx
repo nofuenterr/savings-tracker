@@ -1,26 +1,26 @@
 import { twMerge } from 'tailwind-merge';
 
-interface ButtonPrimaryProps {
+interface ButtonSecondaryProps {
   disabled?: boolean;
   type: 'button' | 'submit' | 'reset';
   text: string;
   onClick?: () => void;
-  ariaLabel?: string;
+  ariaLabel: string;
   className?: string;
 }
 
-export default function ButtonPrimary({
+export default function ButtonSecondary({
   onClick,
   disabled = false,
   type = 'button',
   text,
   ariaLabel,
   className,
-}: ButtonPrimaryProps) {
+}: ButtonSecondaryProps) {
   return (
     <button
       className={twMerge(
-        'grid cursor-pointer place-content-center rounded-full bg-orange-400 px-250 py-150 text-neutral-900 hover:bg-orange-500 disabled:bg-orange-800',
+        'cursor-pointer rounded-full border border-neutral-600 bg-neutral-700 px-250 py-150 hover:bg-neutral-600 disabled:bg-neutral-800 disabled:text-neutral-600',
         className,
       )}
       disabled={disabled}
