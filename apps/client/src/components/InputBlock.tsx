@@ -87,9 +87,14 @@ export default function InputBlock({
         autoComplete={autoComplete}
         spellCheck={spellCheck}
         className={twMerge(
-          'rounded-8 min-w-0 border border-neutral-500 bg-neutral-700 p-200',
+          'rounded-8 min-w-0 border bg-neutral-700 p-200',
           className,
         )}
+        style={{
+          borderColor: errorMessage
+            ? 'var(--color-red-500)'
+            : 'var(--color-neutral-500)',
+        }}
       />
       {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
     </div>

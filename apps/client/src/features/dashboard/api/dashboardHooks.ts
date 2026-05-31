@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 import type {
   CreateTransactionPayload,
@@ -65,12 +66,14 @@ export function useUpdateGoal() {
 
 export function useDeleteGoal() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: deleteGoal,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['goals'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      navigate('/dashboard');
     },
   });
 }
