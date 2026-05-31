@@ -1,13 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState, type ChangeEvent, type SubmitEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { isAxiosError } from 'axios';
 
 import ButtonPrimary from '../../../../components/ButtonPrimary';
+import InputBlock from '../../../../components/InputBlock';
+import ErrorMessage from '../../../../components/ErrorMessage';
+import getFieldError from '../../../../utils/getFieldError';
+import type { ErrorResponse } from '../../../../types/errorType';
 import { useResetPassword } from '../../api/authHooks';
-import getFieldError from '../../utils/getFieldError';
-import type { ErrorResponse } from '../../types/authType';
-import Input from '../Input';
-import ErrorMessage from '../ErrorMessage';
 
 interface NewPasswordCredentials {
   resetToken: string;
@@ -51,29 +51,26 @@ export default function NewPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-250">
-      <Input
+      <InputBlock
         label="New password"
-        required={true}
-        autoFocus={true}
         type="password"
+        required={true}
+        id="new-password"
         name="new-password"
         value={newPassword}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setNewPassword(e.target.value)
-        }
-        error={newPasswordError}
+        onChange={(e) => setNewPassword(e.target.value)}
+        errorMessage={newPasswordError}
       />
 
-      <Input
+      <InputBlock
         label="Confirm new password"
-        required={true}
         type="password"
+        required={true}
+        id="confirm-new-password"
         name="confirm-new-password"
         value={confirmNewPassword}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setConfirmNewPassword(e.target.value)
-        }
-        error={confirmNewPasswordError}
+        onChange={(e) => setConfirmNewPassword(e.target.value)}
+        errorMessage={confirmNewPasswordError}
       />
 
       {generalError && <ErrorMessage errorMessage={generalError} />}

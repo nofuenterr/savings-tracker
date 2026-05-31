@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useState, type ChangeEvent, type SubmitEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { isAxiosError } from 'axios';
 
 import ButtonPrimary from '../../../../components/ButtonPrimary';
+import InputBlock from '../../../../components/InputBlock';
+import ErrorMessage from '../../../../components/ErrorMessage';
+import getFieldError from '../../../../utils/getFieldError';
+import type { ErrorResponse } from '../../../../types/errorType';
 import { useRegister } from '../../api/authHooks';
-import getFieldError from '../../utils/getFieldError';
-import type { ErrorResponse } from '../../types/authType';
-import Input from '../Input';
-import ErrorMessage from '../ErrorMessage';
 
 interface RegisterCredentials {
   username?: string;
@@ -64,56 +64,55 @@ export default function RegisterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-250">
-      <Input
+      <InputBlock
         label="Username"
         type="text"
+        required={false}
+        id="username"
         name="username"
-        placeholder="kmoretti"
         value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="kmoretti"
         maxLength={30}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setUsername(e.target.value)
-        }
-        error={usernameError}
+        errorMessage={usernameError}
       />
 
-      <Input
+      <InputBlock
         label="Email address"
-        required={true}
         type="email"
+        required={true}
+        id="email"
         name="email"
-        placeholder="kleinmoretti@email.com"
         value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="kleinmoretti@email.com"
         maxLength={150}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setEmail(e.target.value)
-        }
-        error={emailError}
+        errorMessage={emailError}
       />
 
-      <Input
+      <InputBlock
         label="Password"
-        required={true}
         type="password"
+        required={true}
+        id="password"
         name="password"
         value={password}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setPassword(e.target.value)
-        }
-        error={passwordError}
+        onChange={(e) => setPassword(e.target.value)}
+        errorMessage={passwordError}
       />
 
-      <Input
+      <InputBlock
         label="Confirm password"
-        required={true}
         type="password"
+        required={true}
+        id="confirm-password"
         name="confirm-password"
         value={confirmPassword}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        onChange={(e) => {
           setConfirmPassword(e.target.value);
           setConfirmPasswordError(null);
         }}
-        error={confirmPasswordError ?? confirmPasswordServerError}
+        errorMessage={confirmPasswordError ?? confirmPasswordServerError}
       />
 
       {generalError && <ErrorMessage errorMessage={generalError} />}

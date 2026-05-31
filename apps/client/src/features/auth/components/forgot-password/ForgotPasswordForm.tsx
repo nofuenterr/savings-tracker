@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useState, type ChangeEvent, type SubmitEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { isAxiosError } from 'axios';
 
 import ButtonPrimary from '../../../../components/ButtonPrimary';
+import InputBlock from '../../../../components/InputBlock';
+import ErrorMessage from '../../../../components/ErrorMessage';
+import getFieldError from '../../../../utils/getFieldError';
+import type { ErrorResponse } from '../../../../types/errorType';
 import { useForgotPassword } from '../../api/authHooks';
-import getFieldError from '../../utils/getFieldError';
-import type { ErrorResponse } from '../../types/authType';
-import Input from '../Input';
-import ErrorMessage from '../ErrorMessage';
 
 interface ForgotPasswordCredentials {
   email: string;
@@ -36,19 +36,18 @@ export default function ForgotPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-250">
-      <Input
+      <InputBlock
         label="Email address"
-        required={true}
-        autoFocus={true}
         type="email"
+        required={false}
+        autoFocus={true}
+        id="email"
         name="email"
-        placeholder="kleinmoretti@email.com"
         value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="kleinmoretti@email.com"
         maxLength={150}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setEmail(e.target.value)
-        }
-        error={emailError}
+        errorMessage={emailError}
       />
 
       {generalError && <ErrorMessage errorMessage={generalError} />}

@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { useState, type ChangeEvent, type SubmitEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { isAxiosError } from 'axios';
 
 import ButtonPrimary from '../../../../components/ButtonPrimary';
+import InputBlock from '../../../../components/InputBlock';
+import ErrorMessage from '../../../../components/ErrorMessage';
+import getFieldError from '../../../../utils/getFieldError';
+import type { ErrorResponse } from '../../../../types/errorType';
 import { useLogin } from '../../api/authHooks';
-import getFieldError from '../../utils/getFieldError';
-import type { ErrorResponse } from '../../types/authType';
-import Input from '../Input';
-import ErrorMessage from '../ErrorMessage';
 
 interface LoginCredentials {
   email: string;
@@ -38,32 +38,30 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-250">
-      <Input
+      <InputBlock
         label="Email address"
+        type="email"
         required={true}
         autoFocus={true}
-        type="email"
+        id="email"
         name="email"
-        placeholder="kleinmoretti@email.com"
         value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="kleinmoretti@email.com"
         maxLength={150}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setEmail(e.target.value)
-        }
-        error={emailError}
+        errorMessage={emailError}
       />
 
       <div className="grid gap-150">
-        <Input
+        <InputBlock
           label="Password"
-          required={true}
           type="password"
+          required={true}
+          id="password"
           name="password"
           value={password}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
-          }
-          error={passwordError}
+          onChange={(e) => setPassword(e.target.value)}
+          errorMessage={passwordError}
         />
         <Link
           className="text-preset-5 justify-self-end rounded-full text-neutral-300 hover:opacity-90"
