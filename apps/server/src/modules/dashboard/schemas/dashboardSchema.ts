@@ -10,17 +10,18 @@ const futureDate = z.coerce.date().refine((date) => date >= new Date(), {
   message: 'Deadline must be in the future',
 });
 
-const goalNameValue = z.string().min(3).max(30);
+const goalNameValue = z
+  .string()
+  .min(3, 'Goal name must be at least 3 characters')
+  .max(30, 'Goal name must not exceed 30 characters');
 
 const transactionTypes = z.enum(['deposit', 'withdrawal']);
-
-const positiveNumber = z.coerce.number().positive();
 
 const goalSortKeys = Object.keys(goalSortOptions) as [string, ...string[]];
 
 export const getUserGoalsSchema = z.object({
   query: z.object({
-    status: z.enum(['inProgress', 'completed', 'notStarted']).optional(),
+    status: z.enum(['all', 'inProgress', 'completed', 'notStarted']).optional(),
     sortBy: z.enum(goalSortKeys).optional(),
   }),
 });
@@ -32,7 +33,9 @@ export const getGoalSchema = z.object({
 export const createGoalSchema = z.object({
   body: z.object({
     goalName: goalNameValue,
-    goalTarget: positiveNumber,
+    goalTarget: z.coerce
+      .number()
+      .positive('Target amount must be greater than 0'),
     deadline: futureDate.optional(),
   }),
 });
@@ -42,8 +45,11 @@ export const updateGoalSchema = z.object({
   body: z
     .object({
       goalName: goalNameValue.optional(),
-      goalTarget: positiveNumber.optional(),
-      deadline: futureDate.optional(),
+      goalTarget: z.coerce
+        .number()
+        .positive('Target amount must be greater than 0')
+        .optional(),
+      deadline: z.coerce.date().optional(),
     })
     .refine((data) => Object.values(data).some((v) => v !== undefined), {
       message: 'At least one field must be provided',
@@ -57,7 +63,9 @@ export const deleteGoalSchema = z.object({
 export const createTransactionSchema = z.object({
   params: idParam,
   body: z.object({
-    amount: positiveNumber,
+    amount: z.coerce
+      .number()
+      .positive('Transaction amount must be greater than 0'),
     note: z.string().max(150).optional(),
     transactionType: transactionTypes,
   }),

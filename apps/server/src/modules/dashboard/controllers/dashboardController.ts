@@ -1,6 +1,10 @@
 import { NextFunction, Response } from 'express';
 
-import { TransactionType } from '@savings-tracker/shared';
+import {
+  GoalSortKeys,
+  GoalStatus,
+  TransactionType,
+} from '@savings-tracker/shared';
 
 import { ControllerRequest } from '../../../types/controllerType';
 import {
@@ -20,8 +24,6 @@ import {
   GetTransactionsQuery,
   GetUserGoalsQuery,
   GoalIdParams,
-  GoalSortKeys,
-  GoalStatus,
   UpdateGoalBody,
 } from '../types/dashboardType';
 

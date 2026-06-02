@@ -94,7 +94,7 @@ export const findGoalsByUserId = async ({
     WHERE g.user_id = $1
   `;
 
-  if (status) {
+  if (status && status !== 'all') {
     if (status === 'inProgress') query += ' AND gb.current < g.goal_target';
     if (status === 'completed') query += ' AND gb.current >= g.goal_target';
     if (status === 'notStarted') query += ' AND gb.goal_id IS NULL';
