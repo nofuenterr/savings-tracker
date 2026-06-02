@@ -88,6 +88,7 @@ export function useCreateTransaction({ id }: IdParams) {
       queryClient.invalidateQueries({
         queryKey: ['goals', newTransaction.goal_id],
       });
+      queryClient.invalidateQueries({ queryKey: ['goals'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
     },
   });
