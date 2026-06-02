@@ -1,9 +1,5 @@
 import { Select } from 'radix-ui';
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-} from '@radix-ui/react-icons';
+import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 
 import type { TransactionType } from '@savings-tracker/shared';
 
@@ -37,33 +33,8 @@ export default function TransactionSelect({
             <ChevronUpIcon />
           </Select.ScrollUpButton>
           <Select.Viewport className="gap-050 grid">
-            <Select.Item
-              key="deposit"
-              value="deposit"
-              className="rounded-6 relative w-full cursor-pointer p-100 outline-none select-none focus:ring-0 focus:outline-none data-highlighted:bg-neutral-700"
-            >
-              <Select.ItemText asChild>
-                <span className="block min-w-0 flex-1 truncate">Deposit</span>
-              </Select.ItemText>
-              <Select.ItemIndicator className="absolute top-100 right-100 shrink-0">
-                <CheckIcon className="size-250" />
-              </Select.ItemIndicator>
-            </Select.Item>
-
-            <Select.Item
-              key="withdrawal"
-              value="withdrawal"
-              className="rounded-6 relative w-full cursor-pointer p-100 outline-none select-none focus:ring-0 focus:outline-none data-highlighted:bg-neutral-700"
-            >
-              <Select.ItemText asChild>
-                <span className="block min-w-0 flex-1 truncate">
-                  Withdrawal
-                </span>
-              </Select.ItemText>
-              <Select.ItemIndicator className="absolute top-100 right-100 shrink-0">
-                <CheckIcon className="size-250" />
-              </Select.ItemIndicator>
-            </Select.Item>
+            <SelectItem key="deposit" value="deposit" text="Deposit" />
+            <SelectItem key="withdrawal" value="withdrawal" text="Withdrawal" />
           </Select.Viewport>
 
           <Select.ScrollUpButton className="flex h-250 cursor-default items-center justify-center bg-neutral-500">
@@ -72,5 +43,23 @@ export default function TransactionSelect({
         </Select.Content>
       </Select.Portal>
     </Select.Root>
+  );
+}
+
+function SelectItem({ value, text }: { value: TransactionType; text: string }) {
+  return (
+    <Select.Item
+      value={value}
+      className="data-[state=checked]:text-neutral-0 rounded-6 relative flex h-500 cursor-pointer items-center gap-100 pr-100 pl-400 text-neutral-100 text-neutral-300 outline-none select-none data-highlighted:bg-neutral-700"
+    >
+      <div className="absolute left-100 grid size-200 place-content-center rounded-full border border-neutral-500 transition-colors">
+        <Select.ItemIndicator className="flex items-center justify-center">
+          <div className="size-100 rounded-full bg-orange-400" />
+        </Select.ItemIndicator>
+      </div>
+      <Select.ItemText asChild>
+        <span className="block min-w-0 flex-1 truncate">{text}</span>
+      </Select.ItemText>
+    </Select.Item>
   );
 }
