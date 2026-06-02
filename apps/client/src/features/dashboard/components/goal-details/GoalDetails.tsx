@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -5,6 +6,8 @@ import chevronLeftIcon from '../../../../assets/icons/icon-chevron-left.svg';
 import { QueryErrorState } from '../../../../components/QueryErrorState';
 import { useGetGoal, useGetGoalTransactions } from '../../api/dashboardHooks';
 import type { GetGoalResponse } from '../../types/dashboardType';
+import EditGoalDialog from './EditGoalDialog';
+import DeleteGoalDialog from './DeleteGoalDialog';
 import {
   GoalDetailsLoading,
   GoalTransactionsLoading,
@@ -82,6 +85,8 @@ function GoalDetailsContent({
 }
 
 function GoalDetailsHeader({ goal }: { goal: GetGoalResponse['goal'] }) {
+  const [editGoalActive, setEditGoalActive] = useState<boolean>(false);
+  const [deleteGoalActive, setDeleteGoalActive] = useState<boolean>(false);
   const navigate = useNavigate();
 
   return (
@@ -95,13 +100,32 @@ function GoalDetailsHeader({ goal }: { goal: GetGoalResponse['goal'] }) {
           <span className="group-hover:text-neutral-300">Back</span>
         </button>
 
-        <button className="hover:text-neutral-0 cursor-pointer rounded-full px-150 py-100 text-neutral-300 hover:bg-neutral-800 md:px-200 md:py-150">
-          Edit goal
-        </button>
+        <EditGoalDialog
+          goal={goal}
+          editGoalActive={editGoalActive}
+          onClose={() => setEditGoalActive(false)}
+        >
+          <button
+            onClick={() => setEditGoalActive(true)}
+            className="hover:text-neutral-0 cursor-pointer rounded-full px-150 py-100 text-neutral-300 hover:bg-neutral-800 md:px-200 md:py-150"
+          >
+            Edit goal
+          </button>
+        </EditGoalDialog>
 
-        <button className="cursor-pointer rounded-full px-150 py-100 text-red-500 hover:bg-neutral-800 md:px-200 md:py-150">
-          Delete goal
-        </button>
+        <DeleteGoalDialog
+          goalName={goal.goal_name}
+          goalId={goal.id}
+          deleteGoalActive={deleteGoalActive}
+          onClose={() => setDeleteGoalActive(false)}
+        >
+          <button
+            onClick={() => setDeleteGoalActive(true)}
+            className="cursor-pointer rounded-full px-150 py-100 text-red-500 hover:bg-neutral-800 md:px-200 md:py-150"
+          >
+            Delete goal
+          </button>
+        </DeleteGoalDialog>
       </div>
 
       <h1 className="text-preset-1-mobile md:text-preset-1 truncate">
