@@ -34,7 +34,8 @@ interface InputBlockProps {
   autoComplete?: HTMLInputAutoCompleteAttribute;
   spellCheck?: boolean;
   className?: string;
-  errorMessage: string | null;
+  errorMessage?: string | null;
+  errorMessages?: string[] | null;
   icon?: string;
 }
 
@@ -56,6 +57,7 @@ export default function InputBlock({
   spellCheck = false,
   className,
   errorMessage,
+  errorMessages,
   icon,
 }: InputBlockProps) {
   return (
@@ -97,6 +99,12 @@ export default function InputBlock({
         }}
       />
       {errorMessage && <ErrorMessage errorMessage={errorMessage} />}
+      {errorMessages &&
+        errorMessages.map((message, index) => {
+          return (
+            <ErrorMessage key={`${index}-${message}`} errorMessage={message} />
+          );
+        })}
     </div>
   );
 }

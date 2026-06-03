@@ -8,6 +8,7 @@ import ErrorMessage from '../../../../components/ErrorMessage';
 import getFieldError from '../../../../utils/getFieldError';
 import type { ErrorResponse } from '../../../../types/errorType';
 import { useRegister } from '../../api/authHooks';
+import getAllFieldErrors from '../../../../utils/getAllFieldErrors';
 
 interface RegisterCredentials {
   username?: string;
@@ -38,7 +39,7 @@ export default function RegisterForm() {
 
   const usernameError = getFieldError(fieldErrors, 'username');
   const emailError = getFieldError(fieldErrors, 'email');
-  const passwordError = getFieldError(fieldErrors, 'password');
+  const passwordErrors = getAllFieldErrors(fieldErrors, 'password');
   const confirmPasswordServerError = getFieldError(
     fieldErrors,
     'confirmPassword',
@@ -98,7 +99,7 @@ export default function RegisterForm() {
         name="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        errorMessage={passwordError}
+        errorMessages={passwordErrors}
       />
 
       <InputBlock
