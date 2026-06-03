@@ -11,6 +11,8 @@ import {
   SafeUpdatedUser,
   FindUserByEmailParams,
   FindResetTokenParams,
+  FindUserByIdParams,
+  UserIdAndPasswordHash,
 } from '../types/authType';
 
 export const createUser = async ({
@@ -23,6 +25,18 @@ export const createUser = async ({
     VALUES ($1, $2, $3)
     RETURNING id, username, email, created_at;`,
     [username, email, passwordHash],
+  );
+
+  return rows[0];
+};
+
+export const findUserById = async ({
+  id,
+}: FindUserByIdParams): Promise<UserIdAndPasswordHash | undefined> => {
+  const { rows } = await db.query<UserIdAndPasswordHash>(
+    `SELECT id, password_hash FROM users
+    WHERE id = $1;`,
+    [id],
   );
 
   return rows[0];

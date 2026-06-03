@@ -1,4 +1,4 @@
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import crypto from 'crypto';
 
 import { BadRequestError, NotFoundError } from '../../../utils/errors';
@@ -7,6 +7,7 @@ import {
   createUser,
   findResetToken,
   findUserByEmail,
+  findUserById,
   updatePassword,
 } from '../repositories/authRepository';
 import {
@@ -71,11 +72,21 @@ export const editPassword = async ({
   userId,
   newPassword,
 }: EditPasswordParams) => {
-  const passwordHash = await hash(newPassword, 12);
-
-  const user = await updatePassword({ userId, passwordHash });
+  const user = await findUserById({ id: userId });
 
   if (!user) throw new NotFoundError('User not found');
 
-  return user;
+  const match = await compare(newPassword, user.password_hash);
+  if (match)
+    throw new BadRequestError(
+      'Your new password must be different from your current password',
+    );
+
+  const passwordHash = await hash(newPassword, 12);
+
+  const updatedUser = await updatePassword({ userId, passwordHash });
+
+  if (!updatedUser) throw new NotFoundError('User not found');
+
+  return updatedUser;
 };

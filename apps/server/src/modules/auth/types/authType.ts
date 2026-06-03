@@ -10,6 +10,11 @@ import {
 } from '../schemas/authSchema';
 
 // --- DB Rows (what comes back from postgres) ---
+export interface UserIdAndPasswordHash {
+  id: number;
+  password_hash: string;
+}
+
 export interface UserIdAndEmail {
   id: number;
   email: string;
@@ -41,6 +46,10 @@ export type SafeUpdatedUser = Omit<SafeUser, 'created_at'> & {
 export type CreateUserParams = Pick<RegisterBody, 'username' | 'email'> & {
   passwordHash: string;
 };
+
+export interface FindUserByIdParams {
+  id: number;
+}
 
 export interface FindUserByEmailParams {
   email: string;
