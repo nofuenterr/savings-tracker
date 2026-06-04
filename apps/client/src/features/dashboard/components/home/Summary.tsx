@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 
+import starPattern from '../../../../assets/images/pattern-star.svg';
 import { QueryErrorState } from '../../../../components/QueryErrorState';
 import { useGetDashboard } from '../../api/dashboardHooks';
 import type { GetDashboardResponse } from '../../types/dashboardType';
@@ -68,7 +69,15 @@ function ActiveGoals({
   activeGoals: GetDashboardResponse['activeGoals'];
 }) {
   return (
-    <div className="rounded-16 grid gap-400 border border-neutral-600 bg-neutral-800 p-200 md:p-250">
+    <div
+      style={{
+        backgroundImage: `url("${starPattern}")`,
+        backgroundSize: '200px 200px, cover',
+        backgroundRepeat: 'no-repeat, no-repeat',
+        backgroundPosition: 'calc(100% + 55px) calc(100% + 95px), center',
+      }}
+      className="rounded-16 grid gap-400 border border-neutral-600 bg-neutral-800 p-200 md:p-250"
+    >
       <h2 className="text-preset-5-semibold">Active goals</h2>
       <p
         className={
@@ -88,7 +97,15 @@ function CompletedGoals({
   completedGoals: GetDashboardResponse['completedGoals'];
 }) {
   return (
-    <div className="rounded-16 grid gap-400 border border-neutral-600 bg-neutral-800 p-200 md:p-250">
+    <div
+      style={{
+        backgroundImage: `url("${starPattern}")`,
+        backgroundSize: '200px 200px, cover',
+        backgroundRepeat: 'no-repeat, no-repeat',
+        backgroundPosition: 'calc(100% + 55px) calc(100% + 95px), center',
+      }}
+      className="rounded-16 grid gap-400 border border-neutral-600 bg-neutral-800 p-200 md:p-250"
+    >
       <h2 className="text-preset-5-semibold">Goals completed</h2>
       <p
         className={

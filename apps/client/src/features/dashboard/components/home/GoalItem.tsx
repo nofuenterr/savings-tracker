@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
+import gridPattern from '../../../../assets/images/pattern-grid.svg';
 import type { GetUserGoalsResponse } from '../../types/dashboardType';
 import currencyFormatter from '../../utils/currencyFormatter';
 import { ProgressBar, ProgressText } from '../Progress';
@@ -13,7 +14,10 @@ export default function GoalItem({
   return (
     <li>
       <Link to={`/dashboard/goals/${id}`} className="rounded-16 block">
-        <div className="rounded-16 grid h-60 gap-200 border border-neutral-600 bg-neutral-800 p-200 md:gap-300 md:p-300">
+        <div
+          style={{ backgroundImage: `url(${gridPattern})` }}
+          className="rounded-16 relative isolate grid h-60 gap-200 overflow-hidden border border-neutral-600 bg-neutral-800 bg-cover bg-center bg-no-repeat p-200 md:gap-300 md:p-300"
+        >
           <GoalHeader goal_name={goal_name} progress={progress} />
 
           <GoalProgress progress={progress} />
@@ -68,12 +72,12 @@ function GoalInfo({
   deadline: Date | null;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-100">
+    <div className="gap-075 flex flex-wrap items-center">
       <p>
         {currencyFormatter.format(current)} of{' '}
         {currencyFormatter.format(goal_target)}
       </p>
-      <span className="text-neutral-300"> - </span>
+      <span className="text-neutral-300">•</span>
       <p className="opacity-70">
         {deadline ? 'Due ' + format(deadline, 'd MMM yyyy') : 'No deadline'}
       </p>

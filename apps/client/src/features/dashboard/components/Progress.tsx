@@ -1,3 +1,5 @@
+import segmentPattern from '../../../assets/images/pattern-segment.svg';
+
 export function ProgressBar({ progress }: { progress: number }) {
   const progressColor =
     progress >= 100
@@ -18,6 +20,7 @@ export function ProgressBar({ progress }: { progress: number }) {
           backgroundColor: progressColor,
           width: progressWidth,
           display: progressDisplay,
+          backgroundImage: `url("${segmentPattern}")`,
         }}
       ></div>
     </div>
