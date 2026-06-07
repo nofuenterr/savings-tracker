@@ -1,10 +1,9 @@
-import { format } from 'date-fns';
-
 import starPattern from '../../../../assets/images/pattern-star.svg';
 import { QueryErrorState } from '../../../../components/QueryErrorState';
 import { useGetDashboard } from '../../api/dashboardHooks';
 import type { GetDashboardResponse } from '../../types/dashboardType';
 import currencyFormatter from '../../utils/currencyFormatter';
+import TransactionsChart from './TransactionsChart';
 
 export default function SummaryContainer() {
   const { data, isLoading, isError, error, refetch, isFetching } =
@@ -126,19 +125,9 @@ function MonthlyActivity({
 }) {
   return (
     <div className="rounded-16 grid gap-250 border border-neutral-600 bg-neutral-800 p-200 md:col-start-1 md:col-end-3 md:p-250 lg:col-end-5">
-      <h2 className="text-preset-4">Monthly transactions</h2>
+      <h2 className="text-preset-4">Monthly savings</h2>
       {monthlyActivity.length > 0 ? (
-        <ul>
-          {monthlyActivity.map((a, i) => {
-            return (
-              <li key={`${i}-${format(a.month, 'MMMM')}`}>
-                <p>Month: {format(a.month, 'MMMM')}</p>
-                <p>Deposits: {currencyFormatter.format(a.deposits)}</p>
-                <p>Withdrawals: {currencyFormatter.format(a.withdrawals)}</p>
-              </li>
-            );
-          })}
-        </ul>
+        <TransactionsChart dataset={monthlyActivity} />
       ) : (
         <div className="grid h-25 place-content-center md:h-30">
           <p className="text-neutral-300">No transactions yet</p>
