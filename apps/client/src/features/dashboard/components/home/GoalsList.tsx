@@ -91,9 +91,9 @@ function GoalsContent({
       />
 
       {goals.length > 0 ? (
-        <ul className="grid gap-300">
-          {goals.map((g) => {
-            return <GoalItem key={g.id} goal={g} />;
+        <ul className="grid gap-300 md:grid-cols-2 lg:grid-flow-row-dense lg:grid-cols-3">
+          {goals.map((g, i) => {
+            return <GoalItem key={g.id} goal={g} index={i} />;
           })}
         </ul>
       ) : (
