@@ -43,10 +43,17 @@ export const findUserMonthlyActivityByUserId = async ({
 }: UserIdParams): Promise<MonthlyActivityRow[]> => {
   const { rows } = await db.query<MonthlyActivityRow>(
     `
-    SELECT month, deposits, withdrawals
-    FROM monthly_activity
-    WHERE user_id = $1
-    ORDER BY month DESC
+    WITH last_12_months AS (
+      SELECT DATE_TRUNC('month', NOW() - (interval '1 month' * generate_series(0, 11))) AS month
+    )
+    SELECT 
+      l.month,
+      COALESCE(ma.deposits, 0) AS deposits,
+      COALESCE(ma.withdrawals, 0) AS withdrawals
+    FROM last_12_months l
+    LEFT JOIN monthly_activity ma 
+      ON ma.month = l.month AND ma.user_id = $1
+    ORDER BY l.month ASC
     `,
     [userId],
   );
