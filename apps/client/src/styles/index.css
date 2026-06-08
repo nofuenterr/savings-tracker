@@ -226,6 +226,13 @@ body {
   margin: 0 auto;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
 pre {
   font-family: inherit;
   font-size: inherit;

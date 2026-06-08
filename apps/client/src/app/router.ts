@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy, createElement } from 'react';
 
-const AuthLayout = lazy(() => import('../layouts/AuthLayout'));
-const ProtectedLayout = lazy(() => import('../layouts/ProtectedLayout'));
-const DashboardLayout = lazy(() => import('../layouts/DashboardLayout'));
+import AuthLayout from '../layouts/AuthLayout';
+import ProtectedLayout from '../layouts/ProtectedLayout';
+import DashboardLayout from '../layouts/DashboardLayout';
 
 const Login = lazy(() => import('../pages/auth/Login'));
 const Register = lazy(() => import('../pages/auth/Register'));
@@ -16,11 +16,11 @@ const PasswordResetSuccess = lazy(
 );
 
 const Home = lazy(() => import('../pages/dashboard/Home'));
-const GoalDetails = lazy(() => import('../pages/dashboard/GoalDetails'));
+const GoalDetails = lazy(() => import('../pages/dashboard/GoalDetailsPage'));
 
-const RootPage = lazy(() => import('../pages/Root'));
-const NotFoundPage = lazy(() => import('../pages/NotFound'));
-const ErrorPage = lazy(() => import('../pages/Error'));
+import RootPage from '../pages/Root';
+import NotFoundPage from '../pages/NotFound';
+import ErrorPage from '../pages/Error';
 
 const router = createBrowserRouter([
   {
