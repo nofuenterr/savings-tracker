@@ -1,4 +1,9 @@
-import type { TransactionType } from '@savings-tracker/shared';
+import type {
+  CreateGoalBody,
+  CreateTransactionBody,
+  TransactionType,
+  UpdateGoalBody,
+} from '@savings-tracker/shared';
 
 interface MonthlyActivity {
   month: Date;
@@ -84,28 +89,13 @@ export interface IdParams {
   id: number;
 }
 
-export interface CreateGoalParams {
-  goalName: string;
-  goalTarget: number;
-  deadline?: Date;
-}
+export type CreateGoalParams = CreateGoalBody;
 
-export interface UpdateGoalParams {
+export type UpdateGoalParams = { id: number } & UpdateGoalBody;
+
+export type CreateTransactionParams = {
   id: number;
-  goalName?: string;
-  goalTarget?: number;
-  deadline?: Date;
-}
-
-export interface CreateTransactionPayload {
-  amount: number;
-  note?: string;
-  transactionType: TransactionType;
-}
-
-export interface CreateTransactionParams extends CreateTransactionPayload {
-  id: number;
-}
+} & CreateTransactionBody;
 
 export interface GetGoalTransactionsParams {
   id: number;

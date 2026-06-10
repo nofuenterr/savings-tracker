@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
+import type { CreateTransactionBody } from '@savings-tracker/shared';
+
 import type {
-  CreateTransactionPayload,
   GetGoalTransactionsParams,
   GetUserGoalsParams,
   GetUserTransactionsParams,
@@ -82,7 +83,7 @@ export function useCreateTransaction({ id }: IdParams) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CreateTransactionPayload) =>
+    mutationFn: (payload: CreateTransactionBody) =>
       createTransaction({ id, ...payload }),
     onSuccess: ({ newTransaction }) => {
       queryClient.invalidateQueries({
