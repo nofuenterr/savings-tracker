@@ -10,7 +10,7 @@ function DashboardLoading() {
 
 export default function DashboardLayout() {
   return (
-    <div className="px-200 md:px-300 lg:px-1000">
+    <div className="mx-auto max-w-360 px-200 md:px-300 lg:px-1000">
       <Header />
       <Suspense fallback={<DashboardLoading />}>
         <Outlet />
