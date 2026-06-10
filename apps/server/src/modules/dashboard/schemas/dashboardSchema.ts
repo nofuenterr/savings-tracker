@@ -1,21 +1,17 @@
 import { z } from 'zod';
 
+import {
+  createGoalBodySchema,
+  createTransactionBodySchema,
+  transactionTypes,
+  updateGoalBodySchema,
+} from '@savings-tracker/shared';
+
 import { goalSortOptions } from '../utils/dashboardUtil';
 
 const idParam = z.object({
   id: z.string().regex(/^[1-9]\d*$/, 'ID must be a positive integer'),
 });
-
-const futureDate = z.coerce.date().refine((date) => date >= new Date(), {
-  message: 'Deadline must be in the future',
-});
-
-const goalNameValue = z
-  .string()
-  .min(3, 'Goal name must be at least 3 characters')
-  .max(30, 'Goal name must not exceed 30 characters');
-
-const transactionTypes = z.enum(['deposit', 'withdrawal']);
 
 const goalSortKeys = Object.keys(goalSortOptions) as [string, ...string[]];
 
@@ -31,29 +27,12 @@ export const getGoalSchema = z.object({
 });
 
 export const createGoalSchema = z.object({
-  body: z.object({
-    goalName: goalNameValue,
-    goalTarget: z.coerce
-      .number()
-      .positive('Target amount must be greater than 0'),
-    deadline: futureDate.optional(),
-  }),
+  body: createGoalBodySchema,
 });
 
 export const updateGoalSchema = z.object({
   params: idParam,
-  body: z
-    .object({
-      goalName: goalNameValue.optional(),
-      goalTarget: z.coerce
-        .number()
-        .positive('Target amount must be greater than 0')
-        .optional(),
-      deadline: z.coerce.date().optional(),
-    })
-    .refine((data) => Object.values(data).some((v) => v !== undefined), {
-      message: 'At least one field must be provided',
-    }),
+  body: updateGoalBodySchema,
 });
 
 export const deleteGoalSchema = z.object({
@@ -62,13 +41,7 @@ export const deleteGoalSchema = z.object({
 
 export const createTransactionSchema = z.object({
   params: idParam,
-  body: z.object({
-    amount: z.coerce
-      .number()
-      .positive('Transaction amount must be greater than 0'),
-    note: z.string().max(150).optional(),
-    transactionType: transactionTypes,
-  }),
+  body: createTransactionBodySchema,
 });
 
 export const getGoalTransactionsSchema = z.object({
