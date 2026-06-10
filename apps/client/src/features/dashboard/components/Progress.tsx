@@ -5,7 +5,7 @@ function getProgressColor({
   isGradientCard,
 }: {
   progress: number;
-  isGradientCard: boolean;
+  isGradientCard?: boolean;
 }) {
   if (progress >= 100) return 'var(--color-green-500)';
   if (progress > 0)
@@ -22,7 +22,7 @@ export function ProgressBar({
   isGradientCard,
 }: {
   progress: number;
-  isGradientCard: boolean;
+  isGradientCard?: boolean;
 }) {
   const barColor = isGradientCard
     ? 'var(--color-orange-800)'
@@ -57,7 +57,7 @@ export function ProgressText({
   isGradientCard,
 }: {
   progress: number;
-  isGradientCard: boolean;
+  isGradientCard?: boolean;
 }) {
   const progressColor = getProgressColor({ progress, isGradientCard });
 
