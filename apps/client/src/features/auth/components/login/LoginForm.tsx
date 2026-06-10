@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useState, type SubmitEvent } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { isAxiosError } from 'axios';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { loginBodySchema, type LoginBodyValues } from '@savings-tracker/shared';
 
 import ButtonPrimary from '../../../../components/ButtonPrimary';
 import InputBlock from '../../../../components/InputBlock';
@@ -9,15 +12,17 @@ import getFieldError from '../../../../utils/getFieldError';
 import type { ErrorResponse } from '../../../../types/errorType';
 import { useLogin } from '../../api/authHooks';
 
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
 export default function LoginForm() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
   const login = useLogin();
+
+  const form = useForm<LoginBodyValues>({
+    resolver: zodResolver(loginBodySchema),
+    mode: 'onBlur',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
   const serverErrors = isAxiosError<ErrorResponse>(login.error)
     ? login.error.response?.data
@@ -31,63 +36,67 @@ export default function LoginForm() {
   const emailError = getFieldError(fieldErrors, 'email');
   const passwordError = getFieldError(fieldErrors, 'password');
 
-  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    login.mutate({ email, password } as LoginCredentials);
+  const handleLogin = async (formData: LoginBodyValues) => {
+    const finalPayload: LoginBodyValues = {
+      email: formData.email,
+      password: formData.password,
+    };
+
+    login.mutate(finalPayload);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-250">
-      <InputBlock
-        label="Email address"
-        type="email"
-        required={true}
-        autoFocus={true}
-        id="email"
-        name="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="kleinmoretti@email.com"
-        maxLength={150}
-        errorMessage={emailError}
-      />
-
-      <div className="grid gap-150">
+    <FormProvider {...form}>
+      <form onSubmit={form.handleSubmit(handleLogin)} className="grid gap-250">
         <InputBlock
-          label="Password"
-          type="password"
+          fieldName="email"
+          label="Email address"
+          type="email"
           required={true}
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          errorMessage={passwordError}
+          autoFocus={true}
+          id="email"
+          name="email"
+          placeholder="kleinmoretti@email.com"
+          maxLength={150}
+          errorMessage={emailError}
         />
-        <Link
-          className="text-preset-5 justify-self-end rounded-full text-neutral-300 hover:opacity-90"
-          to="/auth/forgot-password"
-        >
-          Forgot password?
-        </Link>
-      </div>
 
-      {generalError && <ErrorMessage errorMessage={generalError} />}
+        <div className="grid gap-150">
+          <InputBlock
+            fieldName="password"
+            label="Password"
+            type="password"
+            required={true}
+            id="password"
+            name="password"
+            errorMessage={passwordError}
+          />
+          <Link
+            className="text-preset-5 justify-self-end rounded-full text-neutral-300 hover:opacity-90"
+            to="/auth/forgot-password"
+          >
+            Forgot password?
+          </Link>
+        </div>
 
-      <ButtonPrimary
-        type="submit"
-        disabled={login.isPending || !(email && password)}
-        text={login.isPending ? 'Signing in...' : 'Sign in'}
-      />
+        {generalError && <ErrorMessage errorMessage={generalError} />}
 
-      <p className="text-preset-5 text-center">
-        <span className="text-neutral-300">Don't have an account?</span>{' '}
-        <Link
-          className="rounded-full underline hover:opacity-90"
-          to="/auth/register"
-        >
-          Create one
-        </Link>
-      </p>
-    </form>
+        <ButtonPrimary
+          type="submit"
+          disabled={login.isPending || !form.formState.isValid}
+          text={login.isPending ? 'Signing in...' : 'Sign in'}
+        />
+
+        <p className="text-preset-5 text-center">
+          <span className="text-neutral-300">Don't have an account?</span>{' '}
+          <Link
+            className="rounded-full underline hover:opacity-90"
+            to="/auth/register"
+          >
+            Create one
+          </Link>
+        </p>
+      </form>
+    </FormProvider>
   );
 }

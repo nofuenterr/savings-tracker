@@ -1,32 +1,54 @@
 import { Link } from 'react-router-dom';
-import { useState, type SubmitEvent } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { isAxiosError } from 'axios';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import { Password, type RegisterBodyValues } from '@savings-tracker/shared';
 
 import ButtonPrimary from '../../../../components/ButtonPrimary';
 import InputBlock from '../../../../components/InputBlock';
 import ErrorMessage from '../../../../components/ErrorMessage';
 import getFieldError from '../../../../utils/getFieldError';
+import getAllFieldErrors from '../../../../utils/getAllFieldErrors';
 import type { ErrorResponse } from '../../../../types/errorType';
 import { useRegister } from '../../api/authHooks';
-import getAllFieldErrors from '../../../../utils/getAllFieldErrors';
+import getPasswordErrors from '../../utils/getPasswordErrors';
 
-interface RegisterCredentials {
-  username?: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+export const registerFormSchema = z
+  .object({
+    username: z
+      .string()
+      .optional()
+      .refine((val) => !val || (val.length >= 3 && val.length <= 30), {
+        message: 'Username must be between 3 and 30 characters long',
+      }),
+    email: z.email('Invalid email address'),
+    password: Password,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+type RegisterFormValues = z.infer<typeof registerFormSchema>;
 
 export default function RegisterForm() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState<
-    string | null
-  >(null);
-
   const register = useRegister();
+
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerFormSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  const passwordValue = form.watch('password') || '';
+  const clientPasswordErrors = getPasswordErrors(passwordValue);
 
   const serverErrors = isAxiosError<ErrorResponse>(register.error)
     ? register.error.response?.data
@@ -45,97 +67,85 @@ export default function RegisterForm() {
     'confirmPassword',
   );
 
-  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleRegister = async (formData: RegisterFormValues) => {
+    const finalPayload: RegisterBodyValues = {
+      username: formData.username ? formData.username : undefined,
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword,
+    };
 
-    if (password !== confirmPassword) {
-      setConfirmPasswordError('Passwords do not match');
-      return;
-    }
-
-    setConfirmPasswordError(null);
-
-    register.mutate({
-      username: username || undefined,
-      email,
-      password,
-      confirmPassword,
-    } as RegisterCredentials);
+    register.mutate(finalPayload, { onSuccess: () => form.reset() });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-250">
-      <InputBlock
-        label="Username"
-        type="text"
-        required={false}
-        id="username"
-        name="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="kmoretti"
-        maxLength={30}
-        errorMessage={usernameError}
-      />
+    <FormProvider {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleRegister)}
+        className="grid gap-250"
+      >
+        <InputBlock
+          fieldName="username"
+          label="Username"
+          type="text"
+          required={false}
+          id="username"
+          name="username"
+          placeholder="kmoretti"
+          maxLength={30}
+          errorMessage={usernameError}
+        />
 
-      <InputBlock
-        label="Email address"
-        type="email"
-        required={true}
-        id="email"
-        name="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="kleinmoretti@email.com"
-        maxLength={150}
-        errorMessage={emailError}
-      />
+        <InputBlock
+          fieldName="email"
+          label="Email address"
+          type="email"
+          required={true}
+          id="email"
+          name="email"
+          placeholder="kleinmoretti@email.com"
+          maxLength={150}
+          errorMessage={emailError}
+        />
 
-      <InputBlock
-        label="Password"
-        type="password"
-        required={true}
-        id="password"
-        name="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        errorMessages={passwordErrors}
-      />
+        <InputBlock
+          fieldName="password"
+          label="Password"
+          type="password"
+          required={true}
+          id="password"
+          name="password"
+          errorMessages={passwordErrors || clientPasswordErrors}
+        />
 
-      <InputBlock
-        label="Confirm password"
-        type="password"
-        required={true}
-        id="confirm-password"
-        name="confirm-password"
-        value={confirmPassword}
-        onChange={(e) => {
-          setConfirmPassword(e.target.value);
-          setConfirmPasswordError(null);
-        }}
-        errorMessage={confirmPasswordError ?? confirmPasswordServerError}
-      />
+        <InputBlock
+          fieldName="confirmPassword"
+          label="Confirm password"
+          type="password"
+          required={true}
+          id="confirm-password"
+          name="confirm-password"
+          errorMessage={confirmPasswordServerError} // confirmPasswordError ??
+        />
 
-      {generalError && <ErrorMessage errorMessage={generalError} />}
+        {generalError && <ErrorMessage errorMessage={generalError} />}
 
-      <ButtonPrimary
-        type="submit"
-        disabled={
-          register.isPending ||
-          !(email && password && confirmPassword && !confirmPasswordError)
-        }
-        text={register.isPending ? 'Signing up...' : 'Create account'}
-      />
+        <ButtonPrimary
+          type="submit"
+          disabled={register.isPending || !form.formState.isValid} // || !(&& !confirmPasswordError)
+          text={register.isPending ? 'Signing up...' : 'Create account'}
+        />
 
-      <p className="text-preset-5 text-center">
-        <span className="text-neutral-300">Already have an account?</span>{' '}
-        <Link
-          className="rounded-full underline hover:opacity-90"
-          to="/auth/login"
-        >
-          Sign in
-        </Link>
-      </p>
-    </form>
+        <p className="text-preset-5 text-center">
+          <span className="text-neutral-300">Already have an account?</span>{' '}
+          <Link
+            className="rounded-full underline hover:opacity-90"
+            to="/auth/login"
+          >
+            Sign in
+          </Link>
+        </p>
+      </form>
+    </FormProvider>
   );
 }

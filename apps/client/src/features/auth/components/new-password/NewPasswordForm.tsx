@@ -1,29 +1,53 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState, type SubmitEvent } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { isAxiosError } from 'axios';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import {
+  Password,
+  type ResetPasswordBodyValues,
+} from '@savings-tracker/shared';
 
 import ButtonPrimary from '../../../../components/ButtonPrimary';
 import InputBlock from '../../../../components/InputBlock';
 import ErrorMessage from '../../../../components/ErrorMessage';
 import getFieldError from '../../../../utils/getFieldError';
+import getAllFieldErrors from '../../../../utils/getAllFieldErrors';
 import type { ErrorResponse } from '../../../../types/errorType';
 import { useResetPassword } from '../../api/authHooks';
+import getPasswordErrors from '../../utils/getPasswordErrors';
 
-interface NewPasswordCredentials {
-  resetToken: string;
-  newPassword: string;
-  confirmNewPassword: string;
-}
+export const newPasswordFormSchema = z
+  .object({
+    newPassword: Password,
+    confirmNewPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmNewPassword'],
+  });
+
+type NewPasswordFormValues = z.infer<typeof newPasswordFormSchema>;
 
 export default function NewPasswordForm() {
-  const [newPassword, setNewPassword] = useState<string>('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
-
   const resetPassword = useResetPassword();
+
+  const form = useForm<NewPasswordFormValues>({
+    resolver: zodResolver(newPasswordFormSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      newPassword: '',
+      confirmNewPassword: '',
+    },
+  });
 
   const location = useLocation();
   const state = location.state as { resetToken?: string };
   const resetToken = state?.resetToken; // can redirect to /auth/forgot-password if resetToken doesn't exist
+
+  const passwordValue = form.watch('newPassword') || '';
+  const clientPasswordErrors = getPasswordErrors(passwordValue);
 
   const serverErrors = isAxiosError<ErrorResponse>(resetPassword.error)
     ? resetPassword.error.response?.data
@@ -34,68 +58,69 @@ export default function NewPasswordForm() {
   const generalError =
     serverErrors && !fieldErrors?.length ? serverErrors.message : null;
 
-  const newPasswordError = getFieldError(fieldErrors, 'newPassword');
+  const newPasswordErrors = getAllFieldErrors(fieldErrors, 'newPassword');
   const confirmNewPasswordError = getFieldError(
     fieldErrors,
     'confirmNewPassword',
   );
 
-  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    resetPassword.mutate({
-      resetToken,
-      newPassword,
-      confirmNewPassword,
-    } as NewPasswordCredentials);
+  const handleNewPassword = async (formData: NewPasswordFormValues) => {
+    const finalPayload: ResetPasswordBodyValues = {
+      resetToken: resetToken || '',
+      newPassword: formData.newPassword,
+      confirmNewPassword: formData.confirmNewPassword,
+    };
+
+    resetPassword.mutate(finalPayload, { onSuccess: () => form.reset() });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-250">
-      <InputBlock
-        label="New password"
-        type="password"
-        required={true}
-        id="new-password"
-        name="new-password"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-        errorMessage={newPasswordError}
-      />
-
-      <InputBlock
-        label="Confirm new password"
-        type="password"
-        required={true}
-        id="confirm-new-password"
-        name="confirm-new-password"
-        value={confirmNewPassword}
-        onChange={(e) => setConfirmNewPassword(e.target.value)}
-        errorMessage={confirmNewPasswordError}
-      />
-
-      {generalError && <ErrorMessage errorMessage={generalError} />}
-
-      {!resetToken && (
-        <ErrorMessage errorMessage="Password reset token is missing" />
-      )}
-
-      <ButtonPrimary
-        type="submit"
-        disabled={
-          resetPassword.isPending ||
-          !(newPassword && confirmNewPassword && !!resetToken)
-        }
-        text={
-          resetPassword.isPending ? 'Resetting password...' : 'Reset password'
-        }
-      />
-
-      <Link
-        className="text-preset-5 rounded-full text-center underline hover:opacity-90"
-        to="/auth/login"
+    <FormProvider {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleNewPassword)}
+        className="grid gap-250"
       >
-        Back to sign in
-      </Link>
-    </form>
+        <InputBlock
+          fieldName="newPassword"
+          label="New password"
+          type="password"
+          required={true}
+          id="new-password"
+          name="new-password"
+          errorMessages={newPasswordErrors || clientPasswordErrors}
+        />
+
+        <InputBlock
+          fieldName="confirmNewPassword"
+          label="Confirm new password"
+          type="password"
+          required={true}
+          id="confirm-new-password"
+          name="confirm-new-password"
+          errorMessage={confirmNewPasswordError}
+        />
+
+        {generalError && <ErrorMessage errorMessage={generalError} />}
+
+        {!resetToken && (
+          <ErrorMessage errorMessage="Password reset token is missing" />
+        )}
+
+        <ButtonPrimary
+          type="submit"
+          disabled={resetPassword.isPending || !form.formState.isValid}
+          text={
+            resetPassword.isPending ? 'Resetting password...' : 'Reset password'
+          }
+        />
+
+        <Link
+          className="text-preset-5 rounded-full text-center underline hover:opacity-90"
+          to="/auth/login"
+        >
+          Back to sign in
+        </Link>
+      </form>
+    </FormProvider>
   );
 }

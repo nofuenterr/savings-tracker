@@ -1,4 +1,10 @@
-import type { SafeUser } from '@savings-tracker/shared';
+import type {
+  ForgotPasswordBodyValues,
+  LoginBodyValues,
+  RegisterBodyValues,
+  ResetPasswordBodyValues,
+  SafeUser,
+} from '@savings-tracker/shared';
 
 export interface LoginResponse {
   user: SafeUser;
@@ -16,28 +22,14 @@ export interface VerifyResetTokenResponse {
   resetToken: string;
 }
 
-export interface LoginParams {
-  email: string;
-  password: string;
-}
+export type LoginParams = LoginBodyValues;
 
-export interface RegisterParams {
-  username?: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+export type RegisterParams = RegisterBodyValues;
 
-export interface ForgotPasswordParams {
-  email: string;
-}
+export type ForgotPasswordParams = ForgotPasswordBodyValues;
 
 export interface VerifyResetTokenParams {
   token: string;
 }
 
-export interface ResetPasswordParams {
-  resetToken: string;
-  newPassword: string;
-  confirmNewPassword: string;
-}
+export type ResetPasswordParams = ResetPasswordBodyValues;

@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
-import { useState, type SubmitEvent } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { isAxiosError } from 'axios';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import {
+  forgotPasswordBodySchema,
+  type ForgotPasswordBodyValues,
+} from '@savings-tracker/shared';
 
 import ButtonPrimary from '../../../../components/ButtonPrimary';
 import InputBlock from '../../../../components/InputBlock';
@@ -9,14 +15,16 @@ import getFieldError from '../../../../utils/getFieldError';
 import type { ErrorResponse } from '../../../../types/errorType';
 import { useForgotPassword } from '../../api/authHooks';
 
-interface ForgotPasswordCredentials {
-  email: string;
-}
-
 export default function ForgotPasswordForm() {
-  const [email, setEmail] = useState<string>('');
-
   const sendResetLink = useForgotPassword();
+
+  const form = useForm<ForgotPasswordBodyValues>({
+    resolver: zodResolver(forgotPasswordBodySchema),
+    mode: 'onBlur',
+    defaultValues: {
+      email: '',
+    },
+  });
 
   const serverErrors = isAxiosError<ErrorResponse>(sendResetLink.error)
     ? sendResetLink.error.response?.data
@@ -29,45 +37,52 @@ export default function ForgotPasswordForm() {
 
   const emailError = getFieldError(fieldErrors, 'email');
 
-  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    sendResetLink.mutate({ email } as ForgotPasswordCredentials);
+  const handleForgotPassword = async (formData: ForgotPasswordBodyValues) => {
+    const finalPayload: ForgotPasswordBodyValues = {
+      email: formData.email,
+    };
+
+    sendResetLink.mutate(finalPayload, { onSuccess: () => form.reset() });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-250">
-      <InputBlock
-        label="Email address"
-        type="email"
-        required={false}
-        autoFocus={true}
-        id="email"
-        name="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="kleinmoretti@email.com"
-        maxLength={150}
-        errorMessage={emailError}
-      />
-
-      {generalError && <ErrorMessage errorMessage={generalError} />}
-
-      <ButtonPrimary
-        type="submit"
-        disabled={sendResetLink.isPending || !email}
-        text={
-          sendResetLink.isPending
-            ? 'Sending reset link to email...'
-            : 'Send reset link'
-        }
-      />
-
-      <Link
-        className="text-preset-5 rounded-full text-center underline hover:opacity-90"
-        to="/auth/login"
+    <FormProvider {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleForgotPassword)}
+        className="grid gap-250"
       >
-        Back to sign in
-      </Link>
-    </form>
+        <InputBlock
+          fieldName="email"
+          label="Email address"
+          type="email"
+          required={false}
+          autoFocus={true}
+          id="email"
+          name="email"
+          placeholder="kleinmoretti@email.com"
+          maxLength={150}
+          errorMessage={emailError}
+        />
+
+        {generalError && <ErrorMessage errorMessage={generalError} />}
+
+        <ButtonPrimary
+          type="submit"
+          disabled={sendResetLink.isPending || !form.formState.isValid}
+          text={
+            sendResetLink.isPending
+              ? 'Sending reset link to email...'
+              : 'Send reset link'
+          }
+        />
+
+        <Link
+          className="text-preset-5 rounded-full text-center underline hover:opacity-90"
+          to="/auth/login"
+        >
+          Back to sign in
+        </Link>
+      </form>
+    </FormProvider>
   );
 }
