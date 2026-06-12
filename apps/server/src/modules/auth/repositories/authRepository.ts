@@ -21,9 +21,11 @@ export const createUser = async ({
   passwordHash,
 }: CreateUserParams): Promise<SafeUser | undefined> => {
   const { rows } = await db.query<SafeUser>(
-    `INSERT INTO users (username, email, password_hash) 
+    `
+    INSERT INTO users (username, email, password_hash) 
     VALUES ($1, $2, $3)
-    RETURNING id, username, email, created_at;`,
+    RETURNING id, username, email, created_at
+    `,
     [username, email, passwordHash],
   );
 
@@ -34,8 +36,11 @@ export const findUserById = async ({
   id,
 }: FindUserByIdParams): Promise<UserIdAndPasswordHash | undefined> => {
   const { rows } = await db.query<UserIdAndPasswordHash>(
-    `SELECT id, password_hash FROM users
-    WHERE id = $1;`,
+    `
+    SELECT id, password_hash 
+    FROM users
+    WHERE id = $1
+    `,
     [id],
   );
 
@@ -46,8 +51,11 @@ export const findUserByEmail = async ({
   email,
 }: FindUserByEmailParams): Promise<UserIdAndEmail | undefined> => {
   const { rows } = await db.query<UserIdAndEmail>(
-    `SELECT id, email FROM users
-    WHERE email = $1;`,
+    `
+    SELECT id, email 
+    FROM users
+    WHERE email = $1
+    `,
     [email],
   );
 
@@ -60,9 +68,11 @@ export const createResetToken = async ({
   expiresAt,
 }: CreateResetTokenParams): Promise<NewResetTokenRow | undefined> => {
   const { rows } = await db.query<NewResetTokenRow>(
-    `INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) 
+    `
+    INSERT INTO password_reset_tokens (user_id, token_hash, expires_at) 
     VALUES ($1, $2, $3)
-    RETURNING id, expires_at, created_at;`,
+    RETURNING id, expires_at, created_at
+    `,
     [userId, tokenHash, expiresAt],
   );
 
@@ -73,13 +83,14 @@ export const findResetToken = async ({
   incomingHash,
 }: FindResetTokenParams): Promise<ValidResetTokenRow | undefined> => {
   const { rows } = await db.query<ValidResetTokenRow>(
-    `UPDATE password_reset_tokens
-      SET used_at = NOW()
-      WHERE 
-        token_hash = $1 
-        AND used_at IS NULL 
-        AND expires_at > NOW()
-      RETURNING id, user_id, used_at;`,
+    `
+    UPDATE password_reset_tokens
+    SET used_at = NOW()
+    WHERE token_hash = $1 
+      AND used_at IS NULL 
+      AND expires_at > NOW()
+    RETURNING id, user_id, used_at
+    `,
     [incomingHash],
   );
 
@@ -91,11 +102,14 @@ export const updatePassword = async ({
   passwordHash,
 }: UpdatePasswordParams): Promise<SafeUpdatedUser | undefined> => {
   const { rows } = await db.query<SafeUpdatedUser>(
-    `UPDATE users
-    SET password_hash = $2,
-        updated_at = NOW()
+    `
+    UPDATE users
+    SET 
+      password_hash = $2,
+      updated_at = NOW()
     WHERE id = $1
-    RETURNING id, username, email, updated_at;`,
+    RETURNING id, username, email, updated_at
+    `,
     [userId, passwordHash],
   );
 

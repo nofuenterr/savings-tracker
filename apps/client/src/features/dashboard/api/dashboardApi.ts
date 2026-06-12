@@ -1,4 +1,4 @@
-import type { DataResponse } from '../../../shared/types/api';
+import type { DataResponse } from '../../../types/api';
 import api from '../../../lib/axios';
 import type {
   CreateGoalParams,

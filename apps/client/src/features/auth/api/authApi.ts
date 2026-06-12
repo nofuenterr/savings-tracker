@@ -1,6 +1,6 @@
 import type { SafeUser } from '@savings-tracker/shared';
 
-import type { DataResponse, MessageResponse } from '../../../shared/types/api';
+import type { DataResponse, MessageResponse } from '../../../types/api';
 import api from '../../../lib/axios';
 import type {
   ForgotPasswordParams,

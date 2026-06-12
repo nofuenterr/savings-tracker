@@ -116,7 +116,11 @@ export default function TransactionForm() {
 
         <ButtonPrimary
           type="submit"
-          text="Add funds"
+          text={
+            createTransaction.isPending
+              ? 'Creating transaction...'
+              : 'Create transaction'
+          }
           disabled={createTransaction.isPending || !form.formState.isValid}
         />
       </form>

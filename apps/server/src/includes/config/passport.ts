@@ -19,10 +19,12 @@ const configurePassport = () => {
     new LocalStrategy(localOptions, async (email, password, done) => {
       try {
         const { rows } = await db.query(
-          `SELECT id, username, email, password_hash, created_at
+          `
+          SELECT id, username, email, password_hash, created_at
           FROM users 
           WHERE email = $1 
-          AND deleted_at IS NULL;`,
+            AND deleted_at IS NULL
+          `,
           [email],
         );
         const user = rows[0];
@@ -59,10 +61,12 @@ const configurePassport = () => {
     new JwtStrategy(jwtOptions, async (payload, done) => {
       try {
         const { rows } = await db.query(
-          `SELECT id, username, email, created_at
+          `
+          SELECT id, username, email, created_at
           FROM users 
           WHERE id = $1 
-          AND deleted_at IS NULL;`,
+            AND deleted_at IS NULL
+          `,
           [payload.id],
         );
         const user: SafeUser = rows[0];
