@@ -24,3 +24,18 @@ export const requireAuth = (
     },
   )(req, res, next);
 };
+
+export const optionalAuth = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  passport.authenticate(
+    'jwt',
+    { session: false },
+    (err: Error | null, user: SafeUser | false) => {
+      if (user) req.user = user;
+      next();
+    },
+  )(req, res, next);
+};

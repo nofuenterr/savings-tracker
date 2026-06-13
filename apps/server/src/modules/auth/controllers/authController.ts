@@ -28,7 +28,7 @@ export async function getCurrentUser(
   try {
     return res.status(200).json({
       success: true,
-      data: req.user,
+      data: req.user ?? null,
     });
   } catch (err) {
     next(err);

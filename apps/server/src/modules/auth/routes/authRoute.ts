@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { PassportStatic } from 'passport';
 
 import { validate } from '../../../middleware/validateMiddleware';
-import { requireAuth } from '../../../middleware/authMiddleware';
+import { optionalAuth } from '../../../middleware/authMiddleware';
 import {
   forgotPasswordSchema,
   loginSchema,
@@ -30,7 +30,7 @@ import {
 const authRouterFactory = (passport: PassportStatic) => {
   const authRouter = Router();
 
-  authRouter.get('/me', requireAuth, getCurrentUser);
+  authRouter.get('/me', optionalAuth, getCurrentUser);
   authRouter.post(
     '/register',
     registerLimiter,
