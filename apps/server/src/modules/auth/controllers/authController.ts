@@ -4,9 +4,15 @@ import { NextFunction, Request, Response } from 'express';
 
 import { SafeUser } from '@savings-tracker/shared';
 
-import { JWT_SECRET, NODE_ENV } from '../../../includes/config/mainConfig';
+import {
+  CLIENT_URL,
+  JWT_SECRET,
+  NODE_ENV,
+} from '../../../includes/config/mainConfig';
+import { isUsingGmail } from '../../../includes/config/nodemailer';
 import { ControllerRequest } from '../../../types/controllerType';
 import { UnauthorizedError } from '../../../utils/errors';
+import { sendEmail } from '../../../utils/sendEmail';
 import {
   editPassword,
   fetchResetToken,
@@ -134,9 +140,22 @@ export const forgotPassword = async (
 
     const tokenRaw = await sendResetLink({ email });
 
-    console.log(
-      `http://localhost:5173/auth/verify-reset-token?token=${tokenRaw}`,
-    );
+    if (!isUsingGmail()) {
+      console.log(`${CLIENT_URL}/auth/verify-reset-token?token=${tokenRaw}`);
+    }
+
+    await sendEmail({
+      to: email,
+      subject: 'Password Reset Link',
+      text: `
+        We received a request to reset your Savings Tracker account password.
+
+        Click the link below to reset your password:
+        ${CLIENT_URL}/auth/verify-reset-token?token=${tokenRaw}
+
+        This link will expire in 30 minutes. If you didn't request this, you can safely ignore this email.
+      `,
+    });
 
     return res.status(201).json({
       success: true,

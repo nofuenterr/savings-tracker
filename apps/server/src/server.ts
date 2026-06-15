@@ -1,4 +1,5 @@
 import { PORT } from './includes/config/mainConfig';
+import { initMailer } from './includes/config/nodemailer';
 import app from './app';
 
 process.on('uncaughtException', (err) => {
@@ -12,6 +13,8 @@ process.on('unhandledRejection', (err) => {
 });
 
 const start = async () => {
+  await initMailer();
+
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
   });

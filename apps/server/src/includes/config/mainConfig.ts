@@ -29,3 +29,6 @@ export const DB_PORT = parseInt(getEnvVar('DB_PORT', '5432'), 10);
 export const JWT_SECRET = getEnvVar('JWT_SECRET');
 export const CSRF_SECRET = getEnvVar('CSRF_SECRET');
 export const COOKIE_SECRET = getEnvVar('COOKIE_SECRET');
+
+export const GMAIL_USER = process.env['GMAIL_USER'];
+export const GMAIL_APP_PASSWORD = process.env['GMAIL_APP_PASSWORD'];
