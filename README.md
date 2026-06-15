@@ -222,6 +222,18 @@ npm run build
 
 ---
 
+## Known Limitations
+
+- **Password reset emails in production**: reset emails are sent via
+  Gmail SMTP, which works in local development but is blocked by
+  Railway's outbound network policy (SMTP ports are restricted to
+  prevent abuse). In production, the reset link is logged to the
+  server's output instead of being emailed. A production-ready fix
+  would require an HTTP-based email provider (e.g., Resend, SendGrid)
+  with a verified custom domain.
+
+---
+
 ## Credits
 
 This project is a solution to a [Frontend Mentor](https://www.frontendmentor.io) challenge. I do not own the rights to any assets used.
