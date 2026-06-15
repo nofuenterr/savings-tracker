@@ -11,11 +11,10 @@ export const initMailer = async () => {
 
   if (hasGmail) {
     transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: GMAIL_USER,
-        pass: GMAIL_APP_PASSWORD,
-      },
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // STARTTLS
+      auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
     });
     usingGmail = true;
     console.log('[Mailer] Using Gmail:', GMAIL_USER);
