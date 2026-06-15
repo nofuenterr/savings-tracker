@@ -17,8 +17,8 @@ export default function EmailHeader() {
       title="Check your inbox"
       description={
         email
-          ? `We've sent a reset link to ${email}`
-          : "We've sent a reset link to your email address"
+          ? `We've sent a reset link to ${email} if it's associated with an account`
+          : "We've sent a reset link to your email if it's associated with an account"
       }
     />
   );
