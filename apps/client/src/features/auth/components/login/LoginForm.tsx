@@ -83,7 +83,7 @@ export default function LoginForm() {
 
         <ButtonPrimary
           type="submit"
-          disabled={login.isPending || !form.formState.isValid}
+          disabled={login.isPending}
           text={login.isPending ? 'Signing in...' : 'Sign in'}
         />
 

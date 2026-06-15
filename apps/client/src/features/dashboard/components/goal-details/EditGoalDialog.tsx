@@ -164,7 +164,7 @@ export default function EditGoalDialog({
                 </Dialog.Close>
 
                 <ButtonPrimary
-                  disabled={updateGoal.isPending || !form.formState.isValid}
+                  disabled={updateGoal.isPending}
                   type="submit"
                   text={
                     updateGoal.isPending ? 'Updating goal...' : 'Save changes'

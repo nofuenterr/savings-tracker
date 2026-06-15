@@ -121,7 +121,7 @@ export default function TransactionForm() {
               ? 'Creating transaction...'
               : 'Create transaction'
           }
-          disabled={createTransaction.isPending || !form.formState.isValid}
+          disabled={createTransaction.isPending}
         />
       </form>
     </FormProvider>

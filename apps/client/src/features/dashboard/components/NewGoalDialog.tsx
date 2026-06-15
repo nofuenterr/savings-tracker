@@ -150,7 +150,7 @@ export default function NewGoalDialog({
                 </Dialog.Close>
 
                 <ButtonPrimary
-                  disabled={createGoal.isPending || !form.formState.isValid}
+                  disabled={createGoal.isPending}
                   type="submit"
                   text={
                     createGoal.isPending ? 'Creating goal...' : 'Create goal'

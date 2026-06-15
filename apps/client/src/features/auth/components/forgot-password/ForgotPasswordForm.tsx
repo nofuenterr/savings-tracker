@@ -68,7 +68,7 @@ export default function ForgotPasswordForm() {
 
         <ButtonPrimary
           type="submit"
-          disabled={sendResetLink.isPending || !form.formState.isValid}
+          disabled={sendResetLink.isPending}
           text={
             sendResetLink.isPending
               ? 'Sending reset link to email...'

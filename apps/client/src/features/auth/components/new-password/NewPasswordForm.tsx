@@ -108,7 +108,7 @@ export default function NewPasswordForm() {
 
         <ButtonPrimary
           type="submit"
-          disabled={resetPassword.isPending || !form.formState.isValid}
+          disabled={resetPassword.isPending}
           text={
             resetPassword.isPending ? 'Resetting password...' : 'Reset password'
           }

@@ -125,14 +125,14 @@ export default function RegisterForm() {
           required={true}
           id="confirm-password"
           name="confirm-password"
-          errorMessage={confirmPasswordServerError} // confirmPasswordError ??
+          errorMessage={confirmPasswordServerError}
         />
 
         {generalError && <ErrorMessage errorMessage={generalError} />}
 
         <ButtonPrimary
           type="submit"
-          disabled={register.isPending || !form.formState.isValid} // || !(&& !confirmPasswordError)
+          disabled={register.isPending}
           text={register.isPending ? 'Signing up...' : 'Create account'}
         />
 
