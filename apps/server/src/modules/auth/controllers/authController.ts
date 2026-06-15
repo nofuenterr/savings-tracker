@@ -140,10 +140,9 @@ export const forgotPassword = async (
 
     const tokenRaw = await sendResetLink({ email });
 
-    if (!isUsingGmail()) {
+    if (!isUsingGmail() || NODE_ENV === 'production') {
       console.log(`${CLIENT_URL}/auth/verify-reset-token?token=${tokenRaw}`);
     }
-
     sendEmail({
       to: email,
       subject: 'Password Reset Link',
