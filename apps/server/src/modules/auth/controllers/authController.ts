@@ -144,7 +144,7 @@ export const forgotPassword = async (
       console.log(`${CLIENT_URL}/auth/verify-reset-token?token=${tokenRaw}`);
     }
 
-    await sendEmail({
+    sendEmail({
       to: email,
       subject: 'Password Reset Link',
       text: `
@@ -155,6 +155,8 @@ export const forgotPassword = async (
 
         This link will expire in 30 minutes. If you didn't request this, you can safely ignore this email.
       `,
+    }).catch((err) => {
+      console.error('[Mailer] Failed to send reset email:', err);
     });
 
     return res.status(201).json({
