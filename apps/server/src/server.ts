@@ -1,3 +1,7 @@
+import dns from 'dns';
+
+dns.setDefaultResultOrder('ipv4first');
+
 import { PORT } from './includes/config/mainConfig';
 import { initMailer } from './includes/config/nodemailer';
 import app from './app';
