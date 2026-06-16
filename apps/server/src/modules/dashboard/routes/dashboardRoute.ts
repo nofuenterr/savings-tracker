@@ -7,6 +7,7 @@ import {
   deleteGoal,
   getDashboard,
   getGoal,
+  getGoalProjectedDate,
   getGoalTransactions,
   getUserGoals,
   getUserTransactions,
@@ -58,6 +59,12 @@ dashboardRouter.post(
   mutationLimiter,
   validate(createTransactionSchema),
   createTransaction,
+);
+dashboardRouter.get(
+  '/goals/:id/projection',
+  dashboardLimiter,
+  validate(getGoalSchema),
+  getGoalProjectedDate,
 );
 dashboardRouter.get(
   '/goals/:id',

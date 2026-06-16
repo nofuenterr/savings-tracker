@@ -15,3 +15,8 @@ export type GoalSortKeys =
   | 'amount_saved_asc'
   | 'goal_name_desc'
   | 'goal_name_asc';
+
+export interface Projection {
+  status: 'complete' | 'noProjection' | 'stalled' | 'onTrack';
+  projectedDate?: Date;
+}

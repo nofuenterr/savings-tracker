@@ -20,6 +20,7 @@ import {
   FindGoalsByUserIdParams,
   GoalWithBalanceAndProgressRow,
   GoalCountRow,
+  TransactionDetailRow,
 } from '../types/dashboardType';
 import { goalSortOptions } from '../utils/dashboardUtil';
 
@@ -246,6 +247,27 @@ export const findTransactionsByGoalId = async ({
   );
 
   return rows;
+};
+
+export const findTransactionDetailsByGoalId = async ({
+  userId,
+  goalId,
+}: FindTransactionsByGoalIdParams): Promise<TransactionDetailRow> => {
+  const { rows } = await db.query<TransactionDetailRow>(
+    `
+    SELECT
+      COUNT(*) AS transaction_count,
+      SUM(CASE WHEN transaction_type = 'deposit' THEN amount ELSE -amount END) AS total_net,
+      MIN(created_at) AS first_transaction_at,
+      MAX(created_at) AS last_transaction_at
+    FROM transactions
+    WHERE user_id = $1
+      AND goal_id = $2
+    `,
+    [userId, goalId],
+  );
+
+  return rows[0];
 };
 
 export const findTransactionsByGoalIdAndType = async ({

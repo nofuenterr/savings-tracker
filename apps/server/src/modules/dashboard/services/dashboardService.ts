@@ -1,3 +1,7 @@
+import {} from 'date-fns';
+
+import { Projection } from '@savings-tracker/shared';
+
 import { BadRequestError, NotFoundError } from '../../../utils/errors';
 import {
   insertGoal,
@@ -14,6 +18,7 @@ import {
   findUserMonthlyActivityByUserId,
   findGoalBalanceById,
   findUserGoalCountsByUserId,
+  findTransactionDetailsByGoalId,
 } from '../repositories/dashboardRepository';
 import {
   InsertGoalParams,
@@ -26,6 +31,7 @@ import {
   UserIdParams,
   FindGoalsByUserIdParams,
 } from '../types/dashboardType';
+import { addDaysFromNow, getDaysDifference } from '../utils/dashboardUtil';
 
 export const fetchDashboard = async ({ userId }: UserIdParams) => {
   const totalSavings = await findUserTotalSavingsByUserId({ userId });
@@ -54,6 +60,45 @@ export const fetchGoal = async ({ userId, id }: FindGoalByIdParams) => {
   if (!goal) throw new NotFoundError('Goal not found');
 
   return goal;
+};
+
+export const fetchGoalProjection = async ({
+  userId,
+  id,
+}: FindGoalByIdParams): Promise<Projection> => {
+  const goal = await findGoalById({ userId, id });
+
+  if (!goal) throw new NotFoundError('Goal not found');
+
+  if (goal.current >= goal.goal_target)
+    return {
+      status: 'complete',
+    };
+
+  const details = await findTransactionDetailsByGoalId({ userId, goalId: id });
+
+  if (details.transaction_count === 0)
+    return {
+      status: 'noProjection',
+    };
+
+  const daySpan =
+    getDaysDifference({
+      date1: details.last_transaction_at,
+      date2: details.first_transaction_at,
+    }) || 1;
+  const dailyRate = details.total_net / daySpan;
+
+  if (dailyRate <= 0)
+    return {
+      status: 'stalled',
+    };
+
+  const remaining = goal.goal_target - goal.current;
+  const daysToCompletion = remaining / dailyRate;
+  const projectedDate = addDaysFromNow(daysToCompletion);
+
+  return { status: 'onTrack', projectedDate };
 };
 
 export const addGoal = async ({

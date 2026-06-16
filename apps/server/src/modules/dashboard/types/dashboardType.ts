@@ -64,6 +64,13 @@ export interface TransactionRow {
   created_at: Date;
 }
 
+export interface TransactionDetailRow {
+  transaction_count: number;
+  total_net: number;
+  first_transaction_at: Date;
+  last_transaction_at: Date;
+}
+
 // --- Repository Params ---
 export interface FindGoalBalanceByIdParams {
   id: number;

@@ -13,6 +13,7 @@ import {
   editGoal,
   fetchDashboard,
   fetchGoal,
+  fetchGoalProjection,
   fetchGoalTransactions,
   fetchUserGoals,
   fetchUserTransactions,
@@ -80,6 +81,28 @@ export const getGoal = async (
     return res.status(200).json({
       success: true,
       data: { goal },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getGoalProjectedDate = async (
+  req: ControllerRequest<GoalIdParams>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+
+    const projection = await fetchGoalProjection({
+      userId: req.user.id,
+      id: Number(id),
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: { projection },
     });
   } catch (err) {
     next(err);
