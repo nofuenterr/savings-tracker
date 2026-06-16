@@ -2,6 +2,7 @@ import type { GetGoalResponse } from '../../types/dashboardType';
 import currencyFormatter from '../../utils/currencyFormatter';
 import { ProgressBar, ProgressText } from '../Progress';
 import TransactionForm from './TransactionForm';
+import GoalProjection from './GoalProjection';
 
 export default function InProgressGoal({
   goal,
@@ -27,6 +28,8 @@ function InProgressGoalContent({ goal }: { goal: GetGoalResponse['goal'] }) {
           {currencyFormatter.format(goal.goal_target - goal.current)} remaining
         </p>
       </div>
+
+      <GoalProjection goalId={goal.id} />
 
       <div className="grid gap-200">
         <ProgressBar progress={goal.progress} />

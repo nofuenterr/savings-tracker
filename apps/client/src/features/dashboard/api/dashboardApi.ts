@@ -7,6 +7,7 @@ import type {
   CreateTransactionResponse,
   DeleteGoalResponse,
   GetDashboardResponse,
+  GetGoalProjectedDateResponse,
   GetGoalResponse,
   GetGoalTransactionsParams,
   GetGoalTransactionsResponse,
@@ -40,6 +41,14 @@ export const getUserGoals = async ({ status, sortBy }: GetUserGoalsParams) => {
 export const getGoal = async ({ id }: IdParams) => {
   const { data } = await api.get<DataResponse<GetGoalResponse>>(
     `/dashboard/goals/${id}`,
+  );
+
+  return data.data;
+};
+
+export const getGoalProjection = async ({ id }: IdParams) => {
+  const { data } = await api.get<DataResponse<GetGoalProjectedDateResponse>>(
+    `/dashboard/goals/${id}/projection`,
   );
 
   return data.data;

@@ -15,6 +15,7 @@ import {
   deleteGoal,
   getDashboard,
   getGoal,
+  getGoalProjection,
   getGoalTransactions,
   getUserGoals,
   getUserTransactions,
@@ -39,6 +40,13 @@ export function useGetGoal({ id }: IdParams) {
   return useQuery({
     queryKey: ['goals', id],
     queryFn: () => getGoal({ id }),
+  });
+}
+
+export function useGetGoalProjection({ id }: IdParams) {
+  return useQuery({
+    queryKey: ['goals', id, 'projection'],
+    queryFn: () => getGoalProjection({ id }),
   });
 }
 

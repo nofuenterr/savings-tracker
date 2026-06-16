@@ -1,6 +1,7 @@
 import type {
   CreateGoalBody,
   CreateTransactionBody,
+  Projection,
   TransactionType,
   UpdateGoalBody,
 } from '@savings-tracker/shared';
@@ -40,6 +41,10 @@ export interface GetUserGoalsResponse {
 
 export interface GetGoalResponse {
   goal: GoalWithData;
+}
+
+export interface GetGoalProjectedDateResponse {
+  projection: Projection;
 }
 
 export interface CreateGoalResponse {
