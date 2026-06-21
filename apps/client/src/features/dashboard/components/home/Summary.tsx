@@ -1,8 +1,12 @@
+import { useState } from 'react';
+
 import starPattern from '../../../../assets/images/pattern-star.svg';
+import ButtonSecondary from '../../../../components/ButtonSecondary';
 import { QueryErrorState } from '../../../../components/QueryErrorState';
 import { useGetDashboard } from '../../api/dashboardHooks';
 import type { GetDashboardResponse } from '../../types/dashboardType';
 import currencyFormatter from '../../utils/currencyFormatter';
+import handleDownloadMonthlySavingsPDF from '../../utils/handleDownloadMonthlySavingsPDF';
 import TransactionsChart from './TransactionsChart';
 
 export default function SummaryContainer() {
@@ -123,9 +127,27 @@ function MonthlyActivity({
 }: {
   monthlyActivity: GetDashboardResponse['monthlyActivity'];
 }) {
+  const [isDownloading, setIsDownloading] = useState(false);
+
   return (
     <div className="rounded-16 grid gap-250 border border-neutral-600 bg-neutral-800 p-200 md:col-start-1 md:col-end-3 md:p-250 lg:col-end-5">
-      <h2 className="text-preset-4">Monthly savings</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-preset-4">Monthly savings</h2>
+
+        <ButtonSecondary
+          onClick={() =>
+            handleDownloadMonthlySavingsPDF({
+              monthlyActivity,
+              setIsDownloading,
+            })
+          }
+          text={isDownloading ? 'Downloading...' : 'Download PDF'}
+          type="button"
+          disabled={isDownloading}
+          ariaLabel="Download as PDF"
+        />
+      </div>
+
       {monthlyActivity.length > 0 ? (
         <TransactionsChart dataset={monthlyActivity} />
       ) : (
