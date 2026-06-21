@@ -1,3 +1,5 @@
+import type { UseQueryResult } from '@tanstack/react-query';
+
 import type {
   CreateGoalBody,
   CreateTransactionBody,
@@ -109,4 +111,24 @@ export interface GetGoalTransactionsParams {
 
 export interface GetUserTransactionsParams {
   transactionType?: TransactionType;
+}
+
+export interface GoalDetailsPDFProps {
+  goal: GetGoalResponse['goal'];
+  transactions: GetGoalTransactionsResponse['goalTransactions'];
+  projection: Projection;
+}
+
+export type GoalProjectionQueryResult = UseQueryResult<
+  GetGoalProjectedDateResponse,
+  Error
+>;
+
+export type GoalTransactionsQueryResult = UseQueryResult<
+  GetGoalTransactionsResponse,
+  Error
+>;
+
+export interface MonthlySavingsPDFProps {
+  monthlyActivity: GetDashboardResponse['monthlyActivity'];
 }

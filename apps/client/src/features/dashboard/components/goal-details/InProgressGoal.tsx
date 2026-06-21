@@ -1,4 +1,7 @@
-import type { GetGoalResponse } from '../../types/dashboardType';
+import type {
+  GetGoalResponse,
+  GoalProjectionQueryResult,
+} from '../../types/dashboardType';
 import currencyFormatter from '../../utils/currencyFormatter';
 import { ProgressBar, ProgressText } from '../Progress';
 import TransactionForm from './TransactionForm';
@@ -6,19 +9,27 @@ import GoalProjection from './GoalProjection';
 
 export default function InProgressGoal({
   goal,
+  goalProjection,
 }: {
   goal: GetGoalResponse['goal'];
+  goalProjection: GoalProjectionQueryResult;
 }) {
   return (
     <div className="grid gap-300">
-      <InProgressGoalContent goal={goal} />
+      <InProgressGoalContent goal={goal} goalProjection={goalProjection} />
 
       <TransactionForm />
     </div>
   );
 }
 
-function InProgressGoalContent({ goal }: { goal: GetGoalResponse['goal'] }) {
+function InProgressGoalContent({
+  goal,
+  goalProjection,
+}: {
+  goal: GetGoalResponse['goal'];
+  goalProjection: GoalProjectionQueryResult;
+}) {
   return (
     <div className="rounded-12 grid gap-300 border border-neutral-600 bg-neutral-800 p-200 md:p-300">
       <div className="flex items-center justify-between gap-100">
@@ -29,7 +40,7 @@ function InProgressGoalContent({ goal }: { goal: GetGoalResponse['goal'] }) {
         </p>
       </div>
 
-      <GoalProjection goalId={goal.id} />
+      <GoalProjection goalProjection={goalProjection} />
 
       <div className="grid gap-200">
         <ProgressBar progress={goal.progress} />

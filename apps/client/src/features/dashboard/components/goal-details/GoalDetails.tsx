@@ -4,14 +4,21 @@ import { format } from 'date-fns';
 
 import chevronLeftIcon from '../../../../assets/icons/icon-chevron-left.svg';
 import { QueryErrorState } from '../../../../components/QueryErrorState';
-import { useGetGoal, useGetGoalTransactions } from '../../api/dashboardHooks';
-import type { GetGoalResponse } from '../../types/dashboardType';
+import ButtonSecondary from '../../../../components/ButtonSecondary';
+import {
+  useGetGoal,
+  useGetGoalProjection,
+  useGetGoalTransactions,
+} from '../../api/dashboardHooks';
+import type {
+  GetGoalResponse,
+  GoalProjectionQueryResult,
+  GoalTransactionsQueryResult,
+} from '../../types/dashboardType';
+import handleDownloadGoalDetailsPDF from '../../utils/handleDownloadGoalDetailsPDF';
 import EditGoalDialog from './EditGoalDialog';
 import DeleteGoalDialog from './DeleteGoalDialog';
-import {
-  GoalDetailsLoading,
-  GoalTransactionsLoading,
-} from './GoalDetailsLoading';
+import { GoalDetailsLoading } from './GoalDetailsLoading';
 import CompletedGoal from './CompletedGoal';
 import InProgressGoal from './InProgressGoal';
 import GoalTransactions from './GoalTransactions';
@@ -47,46 +54,50 @@ function GoalDetailsContent({
   goal: GetGoalResponse['goal'];
   id: number;
 }) {
-  const { data, isLoading, isError, error, refetch, isFetching } =
-    useGetGoalTransactions({
-      id: Number(id),
-    });
+  const goalTransactions = useGetGoalTransactions({
+    id: Number(id),
+  });
+
+  const goalProjection = useGetGoalProjection({
+    id: Number(id),
+  });
 
   return (
     <section className="grid gap-400">
-      <GoalDetailsHeader goal={goal} />
+      <GoalDetailsHeader
+        goal={goal}
+        goalTransactions={goalTransactions}
+        goalProjection={goalProjection}
+      />
 
       <div className="grid items-start gap-400 md:gap-600 lg:grid-cols-[1fr_auto]">
         {goal.progress >= 100 ? (
           <CompletedGoal
             goal={goal}
-            transactionsCount={data?.goalTransactions.length}
+            transactionsCount={goalTransactions.data?.goalTransactions.length}
           />
         ) : (
-          <InProgressGoal goal={goal} />
+          <InProgressGoal goal={goal} goalProjection={goalProjection} />
         )}
 
-        {isLoading || isFetching ? (
-          <GoalTransactionsLoading />
-        ) : isError ? (
-          <div className="lg:w-96">
-            <QueryErrorState
-              context="goal transactions"
-              message={error.message}
-              refetch={refetch}
-            />
-          </div>
-        ) : data ? (
-          <GoalTransactions goalTransactions={data.goalTransactions} />
-        ) : null}
+        <GoalTransactions goalTransactions={goalTransactions} />
       </div>
     </section>
   );
 }
 
-function GoalDetailsHeader({ goal }: { goal: GetGoalResponse['goal'] }) {
+function GoalDetailsHeader({
+  goal,
+  goalTransactions: { data: transactionsData },
+  goalProjection: { data: goalProjectionData },
+}: {
+  goal: GetGoalResponse['goal'];
+  goalTransactions: GoalTransactionsQueryResult;
+  goalProjection: GoalProjectionQueryResult;
+}) {
   const [editGoalActive, setEditGoalActive] = useState<boolean>(false);
   const [deleteGoalActive, setDeleteGoalActive] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -126,6 +137,24 @@ function GoalDetailsHeader({ goal }: { goal: GetGoalResponse['goal'] }) {
             Delete goal
           </button>
         </DeleteGoalDialog>
+
+        {transactionsData?.goalTransactions &&
+        goalProjectionData?.projection ? (
+          <ButtonSecondary
+            onClick={() =>
+              handleDownloadGoalDetailsPDF({
+                goal,
+                transactions: transactionsData.goalTransactions,
+                projection: goalProjectionData.projection,
+                setIsDownloading,
+              })
+            }
+            text={isDownloading ? 'Downloading...' : 'Download PDF'}
+            type="button"
+            disabled={isDownloading}
+            ariaLabel="Download as PDF"
+          />
+        ) : null}
       </div>
 
       <h1 className="text-preset-1-mobile md:text-preset-1 truncate">

@@ -1,14 +1,13 @@
 import { format } from 'date-fns';
 
 import errorIcon from '../../../../assets/icons/icon-error.svg';
-import { useGetGoalProjection } from '../../api/dashboardHooks';
+import type { GoalProjectionQueryResult } from '../../types/dashboardType';
 
-export default function GoalProjection({ goalId }: { goalId: number }) {
-  const { data, isLoading, isError, error, refetch, isFetching } =
-    useGetGoalProjection({
-      id: goalId,
-    });
-
+export default function GoalProjection({
+  goalProjection: { data, isLoading, isError, error, refetch, isFetching },
+}: {
+  goalProjection: GoalProjectionQueryResult;
+}) {
   return (
     <>
       {isLoading || isFetching ? (
