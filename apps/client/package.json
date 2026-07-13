@@ -8,7 +8,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@savings-tracker/shared": "*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
@@ -16,6 +15,7 @@
     "@mui/x-charts": "^9.4.0",
     "@radix-ui/react-icons": "^1.3.2",
     "@react-pdf/renderer": "^4.5.1",
+    "@savings-tracker/shared": "*",
     "@tanstack/react-query": "^5.100.10",
     "axios": "^1.16.1",
     "date-fns": "^4.1.0",
@@ -35,6 +35,7 @@
     "@vitejs/plugin-react": "^6.0.2",
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",
-    "vite": "^8.0.13"
+    "vite": "^8.0.13",
+    "vite-plugin-pwa": "^1.3.0"
   }
 }
