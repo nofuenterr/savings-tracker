@@ -58,7 +58,7 @@ export const register = async (
     res.cookie('token', token, {
       httpOnly: true,
       secure: NODE_ENV === 'production',
-      sameSite: 'none',
+      sameSite: 'lax',
       maxAge: 1000 * 60 * 60,
     });
 
@@ -99,7 +99,7 @@ export const login =
           res.cookie('token', token, {
             httpOnly: true,
             secure: NODE_ENV === 'production',
-            sameSite: 'none',
+            sameSite: 'lax',
             maxAge: 1000 * 60 * 60,
           });
 
